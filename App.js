@@ -1,28 +1,18 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useState } from "react";
-import { Text, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import IonIcons from "@expo/vector-icons/Ionicons";
 import { useAssets } from "expo-asset";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer, DarkTheme, DefaultTheme } from "@react-navigation/native";
 import Tabs from "./navigation/Tabs";
-import Movies from "./screens/Movies";
-const Stack = createNativeStackNavigator();
-
-function HomeScreen() {
-   return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-         <Text>Home Screen</Text>
-      </View>
-   );
-}
+import { useColorScheme } from "react-native";
 
 export default function App() {
    const [isAppReady, setIsAppReady] = useState(false);
    const [assets] = useAssets([require("./test.jpg")]);
    const [fontLoaded] = Font.useFonts(IonIcons.font);
+   const isDarkMode = useColorScheme() === "dark";
 
    useEffect(() => {
       const onInit = async () => {
@@ -48,7 +38,7 @@ export default function App() {
    }
 
    return (
-      <NavigationContainer>
+      <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
          <Tabs />
       </NavigationContainer>
    );
