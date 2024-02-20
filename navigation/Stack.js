@@ -27,10 +27,7 @@ const Screen3 = ({ navigation }) => (
 
 function Stack() {
    return (
-      <NativeStack.Navigator
-         screenOptions={{
-            headerTitleAlign: "center",
-         }}>
+      <NativeStack.Navigator screenOptions={{ presentation: "fullScreenModal", headerTitleAlign: "center" }}>
          <NativeStack.Screen name="Screen1" component={Screen1} />
          <NativeStack.Screen name="Screen2" component={Screen2} />
          <NativeStack.Screen name="Screen3" component={Screen3} />
