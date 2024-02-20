@@ -1,23 +1,24 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack";
+import React from "react";
 import { View, Text, Pressable } from "react-native";
 
 const NativeStack = createNativeStackNavigator();
 
-const Screen1 = ({ navigation }) => (
+const Screen1: React.FC<NativeStackScreenProps<any, "Screen1">> = ({ navigation }) => (
    <View>
       <Pressable onPress={() => navigation.navigate("Screen2")}>
          <Text>Screen1</Text>
       </Pressable>
    </View>
 );
-const Screen2 = ({ navigation }) => (
+const Screen2: React.FC<NativeStackScreenProps<any, "Screen2">> = ({ navigation }) => (
    <View>
       <Pressable onPress={() => navigation.navigate("Screen3")}>
          <Text>Screen2</Text>
       </Pressable>
    </View>
 );
-const Screen3 = ({ navigation }) => (
+const Screen3: React.FC<NativeStackScreenProps<any, "Screen3">> = ({ navigation }) => (
    <View>
       <Pressable onPress={() => navigation.navigate("Tabs", { screen: "Search" })}>
          <Text>Screen3</Text>

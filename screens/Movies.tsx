@@ -1,8 +1,8 @@
 import styled from "styled-components/native";
 import React from "react";
-import { YELLOW_COLOR } from "../utils/colors";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-const Movies = ({ navigation }) => {
+const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = ({ navigation }) => {
    return (
       <Btn onPress={() => navigation.navigate("Stack", { screen: "Screen3" })}>
          <Title>Movies</Title>
@@ -12,7 +12,7 @@ const Movies = ({ navigation }) => {
 
 export default Movies;
 
-const Btn = styled.View`
+const Btn = styled.Pressable`
    flex: 1;
    justify-content: center;
    align-items: center;
