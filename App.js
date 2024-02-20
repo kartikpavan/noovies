@@ -5,6 +5,19 @@ import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import IonIcons from "@expo/vector-icons/Ionicons";
 import { useAssets } from "expo-asset";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Tabs from "./navigation/Tabs";
+import Movies from "./screens/Movies";
+const Stack = createNativeStackNavigator();
+
+function HomeScreen() {
+   return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+         <Text>Home Screen</Text>
+      </View>
+   );
+}
 
 export default function App() {
    const [isAppReady, setIsAppReady] = useState(false);
@@ -35,10 +48,8 @@ export default function App() {
    }
 
    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }} onLayout={onLayoutRootView}>
-         <StatusBar style="auto" />
-         <Text>SplashScreen Demo! 👋</Text>
-         <IonIcons name="logo-react" size={30} />
-      </View>
+      <NavigationContainer>
+         <Tabs />
+      </NavigationContainer>
    );
 }
