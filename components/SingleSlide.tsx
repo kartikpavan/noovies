@@ -4,6 +4,8 @@ import styled from "styled-components/native";
 import { Movie } from "../utils/types";
 import { makeImgPath } from "../utils/helper";
 import { BlurView } from "expo-blur";
+import Poster from "./Poster";
+import Rating from "./Rating";
 
 type Props = { movie: Movie };
 
@@ -18,10 +20,10 @@ const SingleSlide = ({ movie }: Props) => {
             tint={isDarkMode ? "dark" : "default"}
             style={StyleSheet.absoluteFill}>
             <Wrapper>
-               <PosterImage source={{ uri: makeImgPath(movie.poster_path) }} />
+               <Poster imgUrl={makeImgPath(movie.poster_path)} />
                <Column>
                   <Title>{movie.original_title}</Title>
-                  <Rating>🎬 {movie.vote_average.toFixed(1)}/10</Rating>
+                  <Rating movieRating={movie.vote_average} />
                   <Description>{movie.overview.slice(0, 80)}...</Description>
                </Column>
             </Wrapper>
@@ -50,12 +52,6 @@ const Column = styled.View`
    margin-left: 15px;
 `;
 
-const PosterImage = styled.Image`
-   width: 100px;
-   height: 160px;
-   border-radius: 10px;
-`;
-
 const Title = styled.Text`
    font-size: 18px;
    color: white;
@@ -65,11 +61,4 @@ const Title = styled.Text`
 
 const Description = styled.Text`
    color: rgba(255, 255, 255, 0.7);
-`;
-
-const Rating = styled(Description)`
-   color: rgba(255, 255, 255, 0.7);
-   margin-top: 5px;
-   margin-bottom: 5px;
-   font-weight: 500;
 `;

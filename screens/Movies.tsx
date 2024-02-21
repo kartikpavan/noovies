@@ -2,10 +2,12 @@ import styled from "styled-components/native";
 import React, { useEffect, useState } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Swiper from "react-native-web-swiper";
-import { ActivityIndicator, Dimensions, useColorScheme } from "react-native";
+import { ActivityIndicator, Dimensions, ScrollView } from "react-native";
 import { Movie } from "../utils/types";
 import { YELLOW_COLOR } from "../utils/colors";
 import SingleSlide from "../components/SingleSlide";
+import MovieListHorizontal from "../components/MovieListHorizontal";
+import MovieListVertical from "../components/MovieListVertical";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -76,39 +78,45 @@ const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = ({ navigation })
    }
 
    return (
-      <MainContainer>
-         <SwiperContainer>
-            <Swiper
-               loop={true}
-               timeout={4}
-               // controlsEnabled={false}
-               springConfig={{ speed: 10, bounciness: 0 }}
-               gesturesEnabled={() => true}
-               minDistanceToCapture={5}
-               minDistanceForAction={0.2}
-               controlsProps={{
-                  dotsPos: "bottom",
-                  nextPos: false,
-                  prevPos: false,
-                  dotsTouchable: true,
-                  dotProps: {
-                     badgeStyle: { height: 5, width: 5, backgroundColor: "rgba(255,255,255,0.1)" },
-                  },
-                  dotsWrapperStyle: { paddingTop: 10 },
-                  dotActiveStyle: { backgroundColor: YELLOW_COLOR, height: 5, width: 5 },
-               }}>
-               {nowPlayingMovies?.slice(0, 5)?.map((movie) => {
-                  return <SingleSlide key={movie.id} movie={movie} />;
-               })}
-            </Swiper>
-         </SwiperContainer>
-      </MainContainer>
+      <ScrollView>
+         <MainContainer>
+            <SwiperContainer>
+               <Swiper
+                  loop={true}
+                  timeout={4}
+                  // controlsEnabled={false}
+                  springConfig={{ speed: 10, bounciness: 0 }}
+                  gesturesEnabled={() => true}
+                  minDistanceToCapture={5}
+                  minDistanceForAction={0.2}
+                  controlsProps={{
+                     dotsPos: "bottom",
+                     nextPos: false,
+                     prevPos: false,
+                     dotsTouchable: true,
+                     dotProps: {
+                        badgeStyle: { height: 5, width: 5, backgroundColor: "rgba(255,255,255,0.1)" },
+                     },
+                     dotsWrapperStyle: { paddingTop: 10 },
+                     dotActiveStyle: { backgroundColor: YELLOW_COLOR, height: 5, width: 5 },
+                  }}>
+                  {nowPlayingMovies?.slice(0, 5)?.map((movie) => {
+                     return <SingleSlide key={movie.id} movie={movie} />;
+                  })}
+               </Swiper>
+            </SwiperContainer>
+            {/* Trending M ovies */}
+            <MovieListHorizontal title="Trending Movies" contents={popularMovies} />
+            {/* Upcoming Movies */}
+            <MovieListVertical title="Upcoming Movies" contents={upcomingMovies} />
+         </MainContainer>
+      </ScrollView>
    );
 };
 
 export default Movies;
 
-const MainContainer = styled.Pressable`
+const MainContainer = styled.View`
    flex: 1;
 `;
 
@@ -120,4 +128,16 @@ const LoaderContainer = styled.View`
    flex: 1;
    align-items: center;
    justify-content: center;
+`;
+
+const ListTitle = styled.Text`
+   font-size: 18px;
+   font-weight: 600;
+   color: ${(props) => props.theme.textColor};
+   margin-top: 20px;
+   margin-bottom: 20px;
+`;
+
+const TrendingMoviesContainer = styled.View`
+   margin-left: 20px;
 `;
