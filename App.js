@@ -1,22 +1,19 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import IonIcons from "@expo/vector-icons/Ionicons";
 import { useAssets } from "expo-asset";
-import { NavigationContainer, DarkTheme, DefaultTheme } from "@react-navigation/native";
-import Tabs from "./navigation/Tabs";
+import { NavigationContainer } from "@react-navigation/native";
 import { useColorScheme } from "react-native";
-import Stack from "./navigation/Stack";
 import Root from "./navigation/RootNavigation";
 import { ThemeProvider } from "styled-components";
 import { darkTheme, lightTheme } from "./utils/styled";
 
 export default function App() {
+   const isDarkMode = useColorScheme() === "dark";
+   const [fontLoaded] = Font.useFonts(IonIcons.font);
    const [isAppReady, setIsAppReady] = useState(false);
    const [assets] = useAssets([require("./test.jpg")]);
-   const [fontLoaded] = Font.useFonts(IonIcons.font);
-   const isDarkMode = useColorScheme() === "dark";
 
    useEffect(() => {
       const onInit = async () => {
@@ -42,10 +39,9 @@ export default function App() {
    }
 
    return (
+      // ThemeProvider Coming from styled-components
       <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
          <NavigationContainer>
-            {/* <Stack /> */}
-            {/* <Tabs /> */}
             <Root />
          </NavigationContainer>
       </ThemeProvider>
