@@ -11,7 +11,7 @@ const Card = ({ movie }: Props) => {
    return (
       <SingleMovieCard>
          <Poster imgUrl={makeImgPath(movie.poster_path)} />
-         <Title>{movie.title.slice(0, 15)}</Title>
+         <Title>{movie.title.slice(0, 10)}</Title>
          <Rating movieRating={movie.vote_average} />
       </SingleMovieCard>
    );

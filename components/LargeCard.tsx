@@ -27,6 +27,8 @@ export default LargeCard;
 
 const View = styled.View`
    flex-direction: row;
+   padding-left: 20px;
+   padding-top: 20px;
 `;
 
 const Column = styled.View`
