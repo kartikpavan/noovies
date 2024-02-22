@@ -8,6 +8,8 @@ import { useColorScheme } from "react-native";
 import Root from "./navigation/RootNavigation";
 import { ThemeProvider } from "styled-components";
 import { darkTheme, lightTheme } from "./utils/styled";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+const queryClient = new QueryClient();
 
 export default function App() {
    const isDarkMode = useColorScheme() === "dark";
@@ -40,10 +42,12 @@ export default function App() {
 
    return (
       // ThemeProvider Coming from styled-components
-      <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-         <NavigationContainer>
-            <Root />
-         </NavigationContainer>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+         <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+            <NavigationContainer>
+               <Root />
+            </NavigationContainer>
+         </ThemeProvider>
+      </QueryClientProvider>
    );
 }
