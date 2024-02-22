@@ -5,14 +5,14 @@ import Poster from "./Poster";
 import { makeImgPath } from "../utils/helper";
 import Rating from "./Rating";
 
-type Props = { movie: Movie };
+type Props = { poster: string; title: string; rating: number };
 
-const Card = ({ movie }: Props) => {
+const Card = ({ poster, title, rating }: Props) => {
    return (
       <SingleMovieCard>
-         <Poster imgUrl={makeImgPath(movie.poster_path)} />
-         <Title>{movie.title.slice(0, 10)}</Title>
-         <Rating movieRating={movie.vote_average} />
+         <Poster imgUrl={makeImgPath(poster)} />
+         <Title>{title.slice(0, 10)}</Title>
+         <Rating movieRating={rating} />
       </SingleMovieCard>
    );
 };

@@ -1,9 +1,5 @@
 import { useQuery } from "react-query";
-import { Movie } from "../utils/types";
-
-const nowPlayingMoviesUrl = "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1&region=IN";
-const upcomingMoviesUrl = "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1&region=IN";
-const popularMoviesUrl = "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&region=IN";
+import { TV_Series } from "../../utils/types";
 
 const options = {
    method: "GET",
@@ -14,13 +10,13 @@ const options = {
    },
 };
 
-export const useMovies = (url: string) => {
-   return useQuery<Movie[]>({
-      queryKey: ["movies"],
+export const useTvSeries = (url: string, key: string) => {
+   return useQuery<TV_Series[]>({
+      queryKey: ["tv", key],
       queryFn: async () => {
          const response = await fetch(url, options);
          const data = await response.json();
-         return data?.results;
+         return data.results;
       },
    });
 };

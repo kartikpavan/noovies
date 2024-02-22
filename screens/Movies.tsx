@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import React, { useState } from "react";
+import React from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Swiper from "react-native-web-swiper";
 import { ActivityIndicator, Dimensions, FlatList, RefreshControl } from "react-native";
@@ -7,7 +7,7 @@ import { YELLOW_COLOR } from "../utils/colors";
 import SingleSlide from "../components/SingleSlide";
 import LargeCard from "../components/LargeCard";
 import Card from "../components/Card";
-import { useMovies } from "../api";
+import { useMovies } from "../api/movies";
 import { useQueryClient } from "react-query";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -42,7 +42,7 @@ const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = ({ navigation })
    if (nowPlayingMoviesLoading || popularMoviesLoading || upcomingMoviesLoading) {
       return (
          <LoaderContainer>
-            <ActivityIndicator />
+            <ActivityIndicator size={"large"} color={YELLOW_COLOR} />
          </LoaderContainer>
       );
    }
@@ -82,7 +82,9 @@ const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = ({ navigation })
                   <TrendingListTitle>Trending Movies</TrendingListTitle>
                   <FlatList
                      data={popularMovies}
-                     renderItem={({ item }) => <Card movie={item} />}
+                     renderItem={({ item }) => (
+                        <Card title={item.original_title} poster={item.poster_path} rating={item.vote_average} />
+                     )}
                      keyExtractor={(item) => item.id.toString()}
                      horizontal
                      showsHorizontalScrollIndicator={false}
