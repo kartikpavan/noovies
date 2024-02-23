@@ -15,14 +15,13 @@ const SearchContext = createContext<SearchContextType>({
 
 export const SearchContextProvider = ({ children }: PropsWithChildren) => {
    const [searchTerm, setSearchTerm] = useState<string>("");
-   const [showSearchTerm, setShowSearchTerm] = useState<boolean>(false);
    const { refetch: refetchTv } = useMovieSearch(searchTerm);
    const { refetch: refetchMovies } = useTvSearch(searchTerm);
 
    const onSubmit = () => {
       if (searchTerm === "") return;
-      refetchMovies().then(() => setShowSearchTerm(!showSearchTerm));
-      refetchTv().then(() => setShowSearchTerm(!showSearchTerm));
+      refetchMovies();
+      refetchTv();
    };
 
    return <SearchContext.Provider value={{ setSearchTerm, searchTerm, onSubmit }}>{children}</SearchContext.Provider>;

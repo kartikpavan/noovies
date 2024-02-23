@@ -21,7 +21,7 @@ const LargeCard = ({ movie }: Props) => {
          }}>
          <Poster imgUrl={makeImgPath(movie.poster_path)} />
          <Column>
-            <Title>{movie.original_title}</Title>
+            <Title>{movie.title}</Title>
             <Date>{movie.release_date}</Date>
             <Description>{movie.overview.slice(0, 100)}...</Description>
          </Column>
@@ -44,7 +44,7 @@ const Column = styled.View`
 
 const Title = styled.Text`
    font-size: 18px;
-   color: white;
+   color: ${(props) => props.theme.textColor};
    font-weight: 600;
    letter-spacing: 0.5px;
 `;
@@ -55,6 +55,6 @@ const Date = styled.Text`
 `;
 
 const Description = styled.Text`
-   color: rgba(255, 255, 255, 0.7);
+   color: ${(props) => props.theme.textColor};
    margin-top: 5px;
 `;

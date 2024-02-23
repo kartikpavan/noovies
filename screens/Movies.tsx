@@ -60,7 +60,7 @@ const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = ({ navigation })
                      springConfig={{ speed: 10, bounciness: 0 }}
                      gesturesEnabled={() => true}
                      minDistanceToCapture={5}
-                     minDistanceForAction={0.2}
+                     minDistanceForAction={0.15}
                      controlsProps={{
                         dotsPos: "bottom",
                         nextPos: false,
@@ -72,9 +72,12 @@ const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = ({ navigation })
                         dotsWrapperStyle: { paddingTop: 10 },
                         dotActiveStyle: { backgroundColor: YELLOW_COLOR, height: 5, width: 5 },
                      }}>
-                     {nowPlayingMovies?.slice(0, 5).map((movie) => {
-                        return <SingleSlide key={movie.id} movie={movie} />;
-                     })}
+                     {nowPlayingMovies
+                        ?.slice(5, 10)
+                        .reverse()
+                        .map((movie) => {
+                           return <SingleSlide key={movie.id} movie={movie} />;
+                        })}
                   </Swiper>
                </SwiperContainer>
                {/* Trending Movies Flatlist */}

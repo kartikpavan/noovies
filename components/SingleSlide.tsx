@@ -7,6 +7,7 @@ import { BlurView } from "expo-blur";
 import Poster from "./Poster";
 import Rating from "./Rating";
 import { useNavigation } from "@react-navigation/native";
+import { YELLOW_COLOR } from "../utils/colors";
 
 type Props = { movie: Movie };
 
@@ -18,7 +19,7 @@ const SingleSlide = ({ movie }: Props) => {
          <BgImage source={{ uri: makeImgPath(movie.backdrop_path) }} style={StyleSheet.absoluteFill} />
          <BlurView
             experimentalBlurMethod="dimezisBlurView"
-            intensity={30}
+            intensity={80}
             tint={isDarkMode ? "dark" : "default"}
             style={StyleSheet.absoluteFill}>
             <Wrapper
@@ -60,7 +61,7 @@ const Column = styled.View`
 
 const Title = styled.Text`
    font-size: 18px;
-   color: white;
+   color: ${YELLOW_COLOR};
    font-weight: 600;
    letter-spacing: 0.5px;
 `;
