@@ -31,3 +31,11 @@ export interface TV_Series {
    vote_average: number;
    vote_count: number;
 }
+
+export interface RootStackParamList {
+   Details: {
+      title: string;
+      id: number;
+   };
+   [key: string]: any; // Adding index signature for type 'string'
+}

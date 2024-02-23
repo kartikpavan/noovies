@@ -83,7 +83,12 @@ const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = ({ navigation })
                   <FlatList
                      data={popularMovies}
                      renderItem={({ item }) => (
-                        <Card title={item.original_title} poster={item.poster_path} rating={item.vote_average} />
+                        <Card
+                           id={item.id}
+                           title={item.original_title}
+                           poster={item.poster_path}
+                           rating={item.vote_average}
+                        />
                      )}
                      keyExtractor={(item) => item.id.toString()}
                      horizontal

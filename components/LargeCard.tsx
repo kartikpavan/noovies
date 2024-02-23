@@ -5,14 +5,20 @@ import { makeImgPath } from "../utils/helper";
 import { Movie } from "../utils/types";
 import Rating from "./Rating";
 import { YELLOW_COLOR } from "../utils/colors";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = {
    movie: Movie;
 };
 
 const LargeCard = ({ movie }: Props) => {
+   const navigation = useNavigation();
    return (
-      <View>
+      <View
+         onPress={() => {
+            // @ts-ignore
+            navigation.navigate("Stack", { screen: "Details", params: { title: movie.title, id: movie.id } });
+         }}>
          <Poster imgUrl={makeImgPath(movie.poster_path)} />
          <Column>
             <Title>{movie.original_title}</Title>
@@ -25,7 +31,7 @@ const LargeCard = ({ movie }: Props) => {
 
 export default LargeCard;
 
-const View = styled.View`
+const View = styled.Pressable`
    flex-direction: row;
    padding-left: 20px;
    padding-top: 20px;

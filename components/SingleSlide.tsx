@@ -6,11 +6,13 @@ import { makeImgPath } from "../utils/helper";
 import { BlurView } from "expo-blur";
 import Poster from "./Poster";
 import Rating from "./Rating";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = { movie: Movie };
 
 const SingleSlide = ({ movie }: Props) => {
    const isDarkMode = useColorScheme() === "dark";
+   const navigation = useNavigation();
    return (
       <View key={movie.id}>
          <BgImage source={{ uri: makeImgPath(movie.backdrop_path) }} style={StyleSheet.absoluteFill} />
@@ -19,7 +21,11 @@ const SingleSlide = ({ movie }: Props) => {
             intensity={30}
             tint={isDarkMode ? "dark" : "default"}
             style={StyleSheet.absoluteFill}>
-            <Wrapper>
+            <Wrapper
+               onPress={() =>
+                  // @ts-ignore
+                  navigation.navigate("Stack", { screen: "Details", params: { id: movie.id, title: movie.title } })
+               }>
                <Poster imgUrl={makeImgPath(movie.poster_path)} />
                <Column>
                   <Title>{movie.original_title}</Title>
@@ -40,7 +46,7 @@ const View = styled.View`
 
 const BgImage = styled.Image``;
 
-const Wrapper = styled.View`
+const Wrapper = styled.Pressable`
    flex-direction: row;
    height: 100%;
    justify-content: center;

@@ -1,35 +1,35 @@
 import React from "react";
 import styled from "styled-components/native";
-import { Movie } from "../utils/types";
 import Poster from "./Poster";
 import { makeImgPath } from "../utils/helper";
 import Rating from "./Rating";
 import { useNavigation } from "@react-navigation/native";
-import { TouchableOpacity } from "react-native";
 
 type Props = { id: number; poster: string; title: string; rating: number };
 
-const Card = ({ poster, title, rating, id }: Props) => {
+const SearchCard = ({ poster, title, rating, id }: Props) => {
    const navigation = useNavigation();
    return (
-      <TouchableOpacity
-         onPress={() => {
-            // @ts-ignore
-            navigation.navigate("Stack", { screen: "Details", params: { title: title, id } });
-         }}>
+      // @ts-ignore
+      <Container onPress={() => navigation.navigate("Stack", { screen: "Details", params: { id } })}>
          <SingleMovieCard>
             <Poster imgUrl={makeImgPath(poster)} />
             <Title>{title.slice(0, 10)}</Title>
             <Rating movieRating={rating} />
          </SingleMovieCard>
-      </TouchableOpacity>
+      </Container>
    );
 };
 
-export default Card;
+export default SearchCard;
+
+const Container = styled.TouchableOpacity`
+   width: 50%;
+   padding: 5px;
+`;
 
 const SingleMovieCard = styled.View`
-   width: 110px;
+   width: 100%;
    align-items: center;
 `;
 
