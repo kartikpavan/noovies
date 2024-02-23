@@ -9,6 +9,7 @@ import Root from "./navigation/RootNavigation";
 import { ThemeProvider } from "styled-components";
 import { darkTheme, lightTheme } from "./utils/styled";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { SearchContextProvider } from "./context/SearchContext";
 const queryClient = new QueryClient();
 
 export default function App() {
@@ -44,9 +45,11 @@ export default function App() {
       // ThemeProvider Coming from styled-components
       <QueryClientProvider client={queryClient}>
          <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-            <NavigationContainer>
-               <Root />
-            </NavigationContainer>
+            <SearchContextProvider>
+               <NavigationContainer>
+                  <Root />
+               </NavigationContainer>
+            </SearchContextProvider>
          </ThemeProvider>
       </QueryClientProvider>
    );

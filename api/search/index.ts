@@ -10,11 +10,24 @@ const options = {
    },
 };
 
-export const useSearch = (searchType: "movie" | "tv", query: string, page: number = 1) => {
-   return useQuery({
-      queryKey: ["search", query],
+export const useMovieSearch = (query: string, page: number = 1) => {
+   return useQuery<Movie[]>({
+      queryKey: ["movieSearch", query + "movie"],
       queryFn: async () => {
-         const searchURL = `https://api.themoviedb.org/3/search/${searchType}?query=${query}&include_adult=false&language=en-US&page=${page}`;
+         const searchURL = `https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=${page}`;
+         const response = await fetch(searchURL, options);
+         const data = await response.json();
+         return data.results;
+      },
+      enabled: false,
+   });
+};
+
+export const useTvSearch = (query: string, page: number = 1) => {
+   return useQuery<TV_Series[]>({
+      queryKey: ["tvSearch", query + "tv"],
+      queryFn: async () => {
+         const searchURL = `https://api.themoviedb.org/3/search/tv?query=${query}&include_adult=false&language=en-US&page=${page}`;
          const response = await fetch(searchURL, options);
          const data = await response.json();
          return data.results;

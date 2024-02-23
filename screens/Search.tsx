@@ -1,21 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { styled } from "styled-components/native";
-import { LIGHT_GREY, YELLOW_COLOR } from "../utils/colors";
-import { ActivityIndicator, FlatList } from "react-native";
-import { useSearch } from "../api/search";
-import SearchCard from "../components/SearchCard";
+import { LIGHT_GREY } from "../utils/colors";
+
+import TopTabs from "../navigation/TopTabs";
+import { useSearchContext } from "../context/SearchContext";
 
 const Search = () => {
-   const [searchTerm, setSearchTerm] = useState<string>("");
-   const [showSearchTerm, setShowSearchTerm] = useState<boolean>(false);
-   const { data: searchResults, isLoading, refetch } = useSearch("movie", searchTerm);
-
-   const onSubmit = () => {
-      if (searchTerm === "") return;
-      refetch().then(() => setShowSearchTerm(!showSearchTerm));
-   };
-
-   console.log(searchResults);
+   const { searchTerm, setSearchTerm, onSubmit } = useSearchContext();
 
    return (
       <Container>
@@ -29,33 +20,7 @@ const Search = () => {
             autoCapitalize="none"
             autoCorrect={true}
          />
-         {showSearchTerm && (
-            <Title>
-               Showing Results for <Label>"{searchTerm}"</Label>{" "}
-            </Title>
-         )}
-         {isLoading ? (
-            <LoaderContainer>
-               <ActivityIndicator size={"large"} color={YELLOW_COLOR} />
-            </LoaderContainer>
-         ) : (
-            <FlatList
-               data={searchResults}
-               keyExtractor={(item, idx) => `${item.original_title}-${idx}`}
-               renderItem={({ item }) => (
-                  <SearchCard
-                     id={item.id}
-                     poster={item.poster_path}
-                     title={item.original_title}
-                     rating={item.vote_average}
-                  />
-               )}
-               numColumns={2}
-               contentContainerStyle={{ gap: 10 }}
-               showsVerticalScrollIndicator={false}
-               // refreshControl={<RefreshControl refreshing={isLoading} onRefresh={() => refetch()} />}
-            />
-         )}
+         <TopTabs />
       </Container>
    );
 };
