@@ -54,7 +54,13 @@ const Tv = () => {
             <FlatList
                data={trendingSeries}
                renderItem={({ item }) => (
-                  <Card id={item.id} poster={item.poster_path} title={item.original_name} rating={item.vote_average} />
+                  <Card
+                     id={item.id}
+                     poster={item.poster_path}
+                     title={item.original_name}
+                     rating={item.vote_average}
+                     isTvSeries
+                  />
                )}
                keyExtractor={(item) => item.id.toString()}
                horizontal
@@ -67,7 +73,13 @@ const Tv = () => {
             <FlatList
                data={airingNowSeries}
                renderItem={({ item }) => (
-                  <Card id={item.id} poster={item.poster_path} title={item.original_name} rating={item.vote_average} />
+                  <Card
+                     id={item.id}
+                     poster={item.poster_path}
+                     title={item.original_name}
+                     rating={item.vote_average}
+                     isTvSeries
+                  />
                )}
                keyExtractor={(item) => item.id.toString()}
                horizontal
@@ -81,7 +93,13 @@ const Tv = () => {
             <FlatList
                data={topRatedSeries}
                renderItem={({ item }) => (
-                  <Card id={item.id} poster={item.poster_path} title={item.original_name} rating={item.vote_average} />
+                  <Card
+                     id={item.id}
+                     poster={item.poster_path}
+                     title={item.original_name}
+                     rating={item.vote_average}
+                     isTvSeries
+                  />
                )}
                keyExtractor={(item) => item.id.toString()}
                horizontal

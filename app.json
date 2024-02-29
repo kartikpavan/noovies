@@ -8,7 +8,12 @@
     ],
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "3b058628-95fb-42e1-a630-a4a1444eebf2"
+      }
+    }
   },
   "name": "noovies"
 }

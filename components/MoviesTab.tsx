@@ -1,5 +1,5 @@
 import { ActivityIndicator, FlatList } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components/native";
 import { YELLOW_COLOR } from "../utils/colors";
 import SearchCard from "./SearchCard";
@@ -8,8 +8,7 @@ import { useSearchContext } from "../context/SearchContext";
 
 const MoviesTab = () => {
    const { searchTerm } = useSearchContext();
-   const [currentPage, setCurrentPage] = useState<number>(1);
-   const { data: movieResults, isLoading: movieIsLoading, refetch } = useMovieSearch(searchTerm, currentPage);
+   const { data: movieResults, isLoading: movieIsLoading } = useMovieSearch(searchTerm, 1);
 
    return (
       <View>
@@ -22,9 +21,15 @@ const MoviesTab = () => {
                data={movieResults}
                keyExtractor={(item, idx) => `${item.title}-${idx}`}
                renderItem={({ item }) => (
-                  <SearchCard id={item.id} poster={item.poster_path} title={item.title} rating={item.vote_average} />
+                  <SearchCard
+                     id={item.id}
+                     poster={item.poster_path}
+                     title={item.title}
+                     rating={item.vote_average}
+                     isTvSeries={false}
+                  />
                )}
-               numColumns={2}
+               numColumns={3}
                contentContainerStyle={{ gap: 10 }}
             />
          )}

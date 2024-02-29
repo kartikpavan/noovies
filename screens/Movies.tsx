@@ -15,7 +15,7 @@ const nowPlayingMoviesUrl = "https://api.themoviedb.org/3/movie/now_playing?lang
 const popularMoviesUrl = "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&region=IN";
 const upcomingMoviesUrl = "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1&region=IN";
 
-const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = ({ navigation }) => {
+const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = () => {
    const queryClient = useQueryClient();
    const {
       data: nowPlayingMovies,
@@ -91,6 +91,7 @@ const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = ({ navigation })
                            title={item.original_title}
                            poster={item.poster_path}
                            rating={item.vote_average}
+                           isTvSeries={false}
                         />
                      )}
                      keyExtractor={(item) => item.id.toString()}

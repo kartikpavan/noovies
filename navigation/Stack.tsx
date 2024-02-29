@@ -11,11 +11,11 @@ function Stack() {
    return (
       <NativeStack.Navigator
          screenOptions={{
-            presentation: "modal",
             headerTitleAlign: "center",
             headerStyle: { backgroundColor: isDarkMode ? BLACK_COLOR : WHITE_COLOR },
             headerTitleStyle: { color: isDarkMode ? "white" : BLACK_COLOR },
-         }}>
+         }}
+      >
          <NativeStack.Screen name="Details" component={Details} />
       </NativeStack.Navigator>
    );

@@ -25,7 +25,10 @@ const SingleSlide = ({ movie }: Props) => {
             <Wrapper
                onPress={() =>
                   // @ts-ignore
-                  navigation.navigate("Stack", { screen: "Details", params: { id: movie.id, title: movie.title } })
+                  navigation.navigate("Stack", {
+                     screen: "Details",
+                     params: { id: movie.id, title: movie.title, isTvSeries: false },
+                  })
                }>
                <Poster imgUrl={makeImgPath(movie.poster_path)} />
                <Column>

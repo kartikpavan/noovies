@@ -9,7 +9,6 @@ import { useSearchContext } from "../context/SearchContext";
 const TvTab = () => {
    const { searchTerm } = useSearchContext();
    const { data: tvResults, isLoading: tvIsLoading } = useTvSearch(searchTerm, 1);
-   console.log("tvResults", tvResults);
    return (
       <View>
          {tvIsLoading ? (
@@ -21,9 +20,15 @@ const TvTab = () => {
                data={tvResults}
                keyExtractor={(item, idx) => `${item.original_name}-${idx}`}
                renderItem={({ item }) => (
-                  <SearchCard id={item.id} poster={item.poster_path} title={item.name} rating={item.vote_average} />
+                  <SearchCard
+                     id={item.id}
+                     poster={item.poster_path}
+                     title={item.name}
+                     rating={item.vote_average}
+                     isTvSeries={true}
+                  />
                )}
-               numColumns={2}
+               numColumns={3}
                contentContainerStyle={{ gap: 10 }}
                showsVerticalScrollIndicator={false}
             />

@@ -3,7 +3,6 @@ import styled from "styled-components/native";
 import Poster from "./Poster";
 import { makeImgPath } from "../utils/helper";
 import { Movie } from "../utils/types";
-import Rating from "./Rating";
 import { YELLOW_COLOR } from "../utils/colors";
 import { useNavigation } from "@react-navigation/native";
 
@@ -17,7 +16,10 @@ const LargeCard = ({ movie }: Props) => {
       <View
          onPress={() => {
             // @ts-ignore
-            navigation.navigate("Stack", { screen: "Details", params: { title: movie.title, id: movie.id } });
+            navigation.navigate("Stack", {
+               screen: "Details",
+               params: { id: movie.id, title: movie.title, isTvSeries: false },
+            });
          }}>
          <Poster imgUrl={makeImgPath(movie.poster_path)} />
          <Column>

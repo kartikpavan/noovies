@@ -5,13 +5,19 @@ import { makeImgPath } from "../utils/helper";
 import Rating from "./Rating";
 import { useNavigation } from "@react-navigation/native";
 
-type Props = { id: number; poster: string; title: string; rating: number };
+type Props = { id: number; poster: string; title: string; rating: number; isTvSeries: boolean };
 
-const SearchCard = ({ poster, title, rating, id }: Props) => {
+const SearchCard = ({ poster, title, rating, id, isTvSeries = true }: Props) => {
    const navigation = useNavigation();
    return (
-      // @ts-ignore
-      <Container onPress={() => navigation.navigate("Stack", { screen: "Details", params: { id } })}>
+      <Container
+         onPress={() =>
+            // @ts-ignore
+            navigation.navigate("Stack", {
+               screen: "Details",
+               params: { id, title, isTvSeries },
+            })
+         }>
          <SingleMovieCard>
             <Poster imgUrl={makeImgPath(poster)} />
             <Title>{title.slice(0, 10)}</Title>
@@ -24,7 +30,7 @@ const SearchCard = ({ poster, title, rating, id }: Props) => {
 export default SearchCard;
 
 const Container = styled.TouchableOpacity`
-   width: 50%;
+   width: 33.33%;
    padding: 5px;
 `;
 
