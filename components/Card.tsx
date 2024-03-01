@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components/native";
-import { Movie } from "../utils/types";
 import Poster from "./Poster";
 import { makeImgPath } from "../utils/helper";
 import Rating from "./Rating";

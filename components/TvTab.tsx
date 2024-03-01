@@ -8,16 +8,16 @@ import { useSearchContext } from "../context/SearchContext";
 
 const TvTab = () => {
    const { searchTerm } = useSearchContext();
-   const { data: tvResults, isLoading: tvIsLoading } = useTvSearch(searchTerm, 1);
+   const { data, isLoading } = useTvSearch(searchTerm, 1);
    return (
       <View>
-         {tvIsLoading ? (
+         {isLoading ? (
             <LoaderContainer>
                <ActivityIndicator size={"large"} color={YELLOW_COLOR} />
             </LoaderContainer>
          ) : (
             <FlatList
-               data={tvResults}
+               data={data}
                keyExtractor={(item, idx) => `${item.original_name}-${idx}`}
                renderItem={({ item }) => (
                   <SearchCard

@@ -11,13 +11,13 @@ const moviesURL = "https://api.themoviedb.org/3/movie/";
 const tvSeriesURL = "https://api.themoviedb.org/3/tv/";
 
 const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation, route }) => {
-   // only ID and title are being recieved
+   //  ID , title and isTvSeries(flag) are being recieved
    const title = route.params?.title;
    const id = route.params?.id;
    const isTvSeries = route.params?.isTvSeries;
 
-   const { data, isLoading, refetch } = useDetails(isTvSeries ? tvSeriesURL : moviesURL, id);
-   console.log(data);
+   const { data, isLoading } = useDetails(isTvSeries ? tvSeriesURL : moviesURL, id);
+
    useEffect(() => {
       navigation.setOptions({
          title: title,
