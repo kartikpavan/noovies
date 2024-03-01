@@ -27,7 +27,7 @@ const SingleSlide = ({ movie }: Props) => {
                   // @ts-ignore
                   navigation.navigate("Stack", {
                      screen: "Details",
-                     params: { id: movie.id, title: movie.title, isTvSeries: false },
+                     params: { id: movie.id, isTvSeries: false },
                   })
                }>
                <Poster imgUrl={makeImgPath(movie.poster_path)} />
