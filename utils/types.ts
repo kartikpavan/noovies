@@ -32,33 +32,6 @@ export interface TV_Series {
    vote_count: number;
 }
 
-export interface MediaItem {
-   adult: boolean;
-   backdrop_path: string;
-   genre_ids: number[];
-   id: number;
-   original_language: string;
-   overview: string;
-   popularity: number;
-   poster_path: string;
-   release_date?: string;
-   title?: string;
-   video?: boolean;
-   original_title?: string;
-   origin_country?: string[];
-   original_name?: string;
-   first_air_date?: string;
-   name?: string;
-}
-
-export interface RootStackParamList {
-   Details: {
-      title: string;
-      id: number;
-   };
-   [key: string]: any; // Adding index signature for type 'string'
-}
-
 export interface ICast {
    adult: boolean;
    gender: number;
@@ -72,4 +45,19 @@ export interface ICast {
    character: string;
    credit_id: string;
    order: number;
+}
+
+export interface Review {
+   author: string;
+   author_details: {
+      name: string;
+      username: string;
+      avatar_path: string | null;
+      rating: number;
+   };
+   content: string;
+   created_at: string;
+   id: string;
+   updated_at: string;
+   url: string;
 }

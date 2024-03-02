@@ -12,16 +12,11 @@ import { YELLOW_COLOR } from "../utils/colors";
 type Props = { movie: Movie };
 
 const SingleSlide = ({ movie }: Props) => {
-   const isDarkMode = useColorScheme() === "dark";
    const navigation = useNavigation();
    return (
       <View key={movie.id}>
          <BgImage source={{ uri: makeImgPath(movie.backdrop_path) }} style={StyleSheet.absoluteFill} />
-         <BlurView
-            experimentalBlurMethod="dimezisBlurView"
-            intensity={80}
-            tint={isDarkMode ? "dark" : "default"}
-            style={StyleSheet.absoluteFill}>
+         <BlurView experimentalBlurMethod="dimezisBlurView" intensity={80} tint="dark" style={StyleSheet.absoluteFill}>
             <Wrapper
                onPress={() =>
                   // @ts-ignore

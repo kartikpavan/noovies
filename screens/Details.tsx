@@ -68,26 +68,32 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
                </Column>
             </Header>
             <ExtraInfo>
-               <Rating movieRating={data?.vote_average} />
-               {data?.seasons?.length && <SeasonOrRunTime>{`${data.seasons.length} seasons`}</SeasonOrRunTime>}
-               {data?.runtime && <SeasonOrRunTime>{`${data.runtime}m`}</SeasonOrRunTime>}
-               <Badge>
-                  <PGRating>{data?.adult ? "A 18+" : "U/A 13+"}</PGRating>
-               </Badge>
+               <FlexRow>
+                  <Rating movieRating={data?.vote_average} />
+                  {data?.seasons?.length && <SeasonOrRunTime>{`${data.seasons.length} seasons`}</SeasonOrRunTime>}
+                  {data?.runtime && <SeasonOrRunTime>{`${data.runtime}m`}</SeasonOrRunTime>}
+                  <Badge>
+                     <PGRating>{data?.adult ? "A 18+" : "U/A 13+"}</PGRating>
+                  </Badge>
+               </FlexRow>
+               <IconsContainer>
+                  <IonIcons name="bookmark-outline" size={22} color={WHITE_COLOR} />
+                  <IonIcons
+                     onPress={() => Alert.alert("Share", "Coming Soon")}
+                     name="share-social-outline"
+                     size={22}
+                     color={WHITE_COLOR}
+                  />
+               </IconsContainer>
             </ExtraInfo>
             <Overview>{data.overview}</Overview>
             <WatchNowBtn onPress={() => OpenURL(data.homepage)}>
                <IonIcons name="play" size={20} color={BLACK_COLOR} />
                <BtnText>Watch Now</BtnText>
             </WatchNowBtn>
-            <FlexRow>
-               <WatchTrailerBtn>
-                  <BtnText style={{ color: YELLOW_COLOR }}>Play Trailer</BtnText>
-               </WatchTrailerBtn>
-               <WatchLaterbtn>
-                  <BtnText>Watch Later</BtnText>
-               </WatchLaterbtn>
-            </FlexRow>
+            <WatchTrailerBtn>
+               <BtnText style={{ color: YELLOW_COLOR }}>Play Trailer</BtnText>
+            </WatchTrailerBtn>
             <ListContainer>
                <ListTitle>Cast</ListTitle>
                <FlatList
@@ -200,6 +206,13 @@ const SeasonOrRunTime = styled.Text`
    font-weight: 500;
 `;
 
+const FlexRow = styled.View`
+   flex-direction: row;
+   gap: 10px;
+   align-items: center;
+   justify-content: center;
+`;
+
 const ExtraInfo = styled.View`
    width: 90%;
    color: ${(props) => props.theme.textColor};
@@ -207,6 +220,14 @@ const ExtraInfo = styled.View`
    flex-direction: row;
    gap: 10px;
    align-items: center;
+   justify-content: space-between;
+`;
+
+const IconsContainer = styled.View`
+   flex-direction: row;
+   gap: 20px;
+   align-items: center;
+   justify-content: center;
 `;
 
 const Overview = styled.Text`
@@ -231,18 +252,6 @@ const BtnText = styled.Text`
    font-size: 16px;
 `;
 
-const WatchLaterbtn = styled.TouchableOpacity`
-   background-color: ${WHITE_COLOR};
-   padding: 8px;
-   margin: 20px;
-   border-radius: 10px;
-   align-items: center;
-   justify-content: center;
-   border: 1px solid ${(props) => props.theme.textColor};
-   width: 40%;
-   align-self: center;
-`;
-
 const WatchTrailerBtn = styled.TouchableOpacity`
    background-color: transparent;
    border: 1px solid ${YELLOW_COLOR};
@@ -251,15 +260,8 @@ const WatchTrailerBtn = styled.TouchableOpacity`
    border-radius: 10px;
    align-items: center;
    justify-content: center;
-   width: 40%;
+   width: 90%;
    align-self: center;
-`;
-
-const FlexRow = styled.View`
-   flex-direction: row;
-   align-items: center;
-   justify-content: space-between;
-   width: 100%;
 `;
 
 const ListContainer = styled.View`

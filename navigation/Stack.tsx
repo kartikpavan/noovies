@@ -12,6 +12,7 @@ function Stack() {
             headerTitleAlign: "center",
             headerStyle: { backgroundColor: BLACK_COLOR },
             headerTitleStyle: { color: WHITE_COLOR },
+            headerTintColor: WHITE_COLOR,
          }}>
          <NativeStack.Screen name="Details" component={Details} />
       </NativeStack.Navigator>

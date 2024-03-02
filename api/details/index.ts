@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { ICast } from "../../utils/types";
+import { ICast, Review } from "../../utils/types";
 
 const options = {
    method: "GET",
@@ -38,6 +38,17 @@ export const useRecommendations = (url: string, id: string) => {
       queryKey: ["movieRecomendations", id],
       queryFn: async () => {
          const response = await fetch(url + id + "/recommendations", options);
+         const data = await response.json();
+         return data.results;
+      },
+   });
+};
+
+export const useReviews = (url: string, id: string) => {
+   return useQuery<Review[]>({
+      queryKey: ["movieReviews", id],
+      queryFn: async () => {
+         const response = await fetch(url + id + "/reviews", options);
          const data = await response.json();
          return data.results;
       },

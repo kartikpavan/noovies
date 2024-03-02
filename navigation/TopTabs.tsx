@@ -15,9 +15,10 @@ function TopTabs() {
             tabBarIndicatorStyle: {
                backgroundColor: YELLOW_COLOR,
             },
+            swipeEnabled: false,
          }}>
          <Tab.Screen name="MOVIES" component={MoviesTab} />
-         <Tab.Screen name="TV" component={TvTab} initialParams={{ title: "TV_TITLE" }} />
+         <Tab.Screen name="TV" component={TvTab} />
       </Tab.Navigator>
    );
 }
