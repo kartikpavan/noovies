@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { ICast } from "../../utils/types";
 
 const options = {
    method: "GET",
@@ -18,5 +19,27 @@ export const useDetails = (url: string, id: string) => {
          return data;
       },
       // enabled: false,
+   });
+};
+
+export const useCredits = (url: string, id: string) => {
+   return useQuery<ICast[]>({
+      queryKey: ["movieCredits", id],
+      queryFn: async () => {
+         const response = await fetch(url + id + "/credits", options);
+         const data = await response.json();
+         return data.cast;
+      },
+   });
+};
+
+export const useRecommendations = (url: string, id: string) => {
+   return useQuery({
+      queryKey: ["movieRecomendations", id],
+      queryFn: async () => {
+         const response = await fetch(url + id + "/recommendations", options);
+         const data = await response.json();
+         return data.results;
+      },
    });
 };

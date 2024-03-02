@@ -7,13 +7,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useColorScheme } from "react-native";
 import Root from "./navigation/RootNavigation";
 import { ThemeProvider } from "styled-components";
-import { darkTheme, lightTheme } from "./utils/styled";
+import { darkTheme } from "./utils/styled";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SearchContextProvider } from "./context/SearchContext";
 const queryClient = new QueryClient();
 
 export default function App() {
-   const isDarkMode = useColorScheme() === "dark";
    const [fontLoaded] = Font.useFonts(IonIcons.font);
    const [isAppReady, setIsAppReady] = useState(false);
    const [assets] = useAssets([require("./test.jpg")]);
@@ -44,7 +43,7 @@ export default function App() {
    return (
       // ThemeProvider Coming from styled-components
       <QueryClientProvider client={queryClient}>
-         <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+         <ThemeProvider theme={darkTheme}>
             <SearchContextProvider>
                <NavigationContainer>
                   <Root />

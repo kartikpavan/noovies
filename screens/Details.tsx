@@ -1,13 +1,17 @@
 import { styled } from "styled-components/native";
 import React, { useEffect } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useDetails } from "../api/details";
-import { ActivityIndicator, Alert, Dimensions, Linking, StyleSheet } from "react-native";
+import { useDetails, useCredits, useRecommendations } from "../api/details";
+import { ActivityIndicator, Alert, Dimensions, FlatList, Linking, ScrollView, StyleSheet } from "react-native";
 import { BLACK_COLOR, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
 import Poster from "../components/Poster";
 import { getYear, makeImgPath } from "../utils/helper";
 import { LinearGradient } from "expo-linear-gradient";
 import IonIcons from "@expo/vector-icons/Ionicons";
+import Rating from "../components/Rating";
+import Badge from "../components/Badge";
+import CastCard from "../components/CastCard";
+import Card from "../components/Card";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -20,6 +24,8 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
    const isTvSeries = route.params?.isTvSeries;
    console.log(id);
    const { data, isLoading } = useDetails(isTvSeries ? tvSeriesURL : moviesURL, id);
+   const { data: movieCredits } = useCredits(isTvSeries ? tvSeriesURL : moviesURL, id);
+   const { data: recommendations } = useRecommendations(isTvSeries ? tvSeriesURL : moviesURL, id);
 
    // Watch Movie / Series
    const OpenURL = async (url: string) => {
@@ -43,33 +49,99 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
    }
 
    return (
-      <Container>
-         <Header>
-            <Background style={StyleSheet.absoluteFill} source={{ uri: makeImgPath(data.backdrop_path) }} />
-            <LinearGradient
-               // Background Linear Gradient
-               colors={["transparent", BLACK_COLOR]}
-               style={StyleSheet.absoluteFill}
-            />
-            <Column>
-               <Poster imgUrl={makeImgPath(data.poster_path)} />
-               <FlexColumn>
-                  <Title>{data?.name || data?.original_title}</Title>
-                  <Date>{getYear(data?.first_air_date) || getYear(data?.release_date)}</Date>
-                  <PGRating>{data.adult ? "A 18+" : "U/A 13+"}</PGRating>
-                  <SeasonOrRunTime>{`${data?.seasons?.length} seasons` || `${data?.runtime}m`}</SeasonOrRunTime>
-               </FlexColumn>
-            </Column>
-         </Header>
-         <Overview>{data.overview}</Overview>
-         <WatchNowBtn onPress={() => OpenURL(data.homepage)}>
-            <IonIcons name="play" size={20} color={BLACK_COLOR} />
-            <BtnText>Watch Now</BtnText>
-         </WatchNowBtn>
-         <WatchLaterbtn>
-            <BtnText>Add to Watch Later</BtnText>
-         </WatchLaterbtn>
-      </Container>
+      <ScrollView>
+         <Container>
+            <Header>
+               <Background style={StyleSheet.absoluteFill} source={{ uri: makeImgPath(data.backdrop_path) }} />
+               <LinearGradient
+                  // Background Linear Gradient
+                  colors={["transparent", BLACK_COLOR]}
+                  style={StyleSheet.absoluteFill}
+               />
+               <Column>
+                  <Poster imgUrl={makeImgPath(data.poster_path)} />
+                  <FlexColumn>
+                     <Title>{data?.name || data?.original_title}</Title>
+                     {data?.first_air_date && <Date>{getYear(data?.first_air_date)}</Date>}
+                     {data?.release_date && <Date>{getYear(data?.release_date)}</Date>}
+                  </FlexColumn>
+               </Column>
+            </Header>
+            <ExtraInfo>
+               <Rating movieRating={data?.vote_average} />
+               {data?.seasons?.length && <SeasonOrRunTime>{`${data.seasons.length} seasons`}</SeasonOrRunTime>}
+               {data?.runtime && <SeasonOrRunTime>{`${data.runtime}m`}</SeasonOrRunTime>}
+               <Badge>
+                  <PGRating>{data?.adult ? "A 18+" : "U/A 13+"}</PGRating>
+               </Badge>
+            </ExtraInfo>
+            <Overview>{data.overview}</Overview>
+            <WatchNowBtn onPress={() => OpenURL(data.homepage)}>
+               <IonIcons name="play" size={20} color={BLACK_COLOR} />
+               <BtnText>Watch Now</BtnText>
+            </WatchNowBtn>
+            <FlexRow>
+               <WatchTrailerBtn>
+                  <BtnText style={{ color: YELLOW_COLOR }}>Play Trailer</BtnText>
+               </WatchTrailerBtn>
+               <WatchLaterbtn>
+                  <BtnText>Watch Later</BtnText>
+               </WatchLaterbtn>
+            </FlexRow>
+            <ListContainer>
+               <ListTitle>Cast</ListTitle>
+               <FlatList
+                  data={movieCredits}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={({ item }) => <CastCard cast={item} />}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: 5 }}
+                  style={{ marginHorizontal: 10, marginTop: 10 }}
+               />
+            </ListContainer>
+            <ListContainer style={{ marginBottom: 20, marginTop: 20 }}>
+               <ListTitle>More like this</ListTitle>
+               {isTvSeries ? (
+                  <FlatList
+                     data={recommendations}
+                     renderItem={({ item }) => (
+                        <Card
+                           id={item.id}
+                           poster={item.poster_path}
+                           title={item.original_name}
+                           rating={item.vote_average}
+                           isTvSeries
+                        />
+                     )}
+                     style={{ marginHorizontal: 20, marginTop: 10 }}
+                     keyExtractor={(item) => item.id.toString()}
+                     horizontal
+                     showsHorizontalScrollIndicator={false}
+                     contentContainerStyle={{ gap: 20 }}
+                  />
+               ) : (
+                  <FlatList
+                     data={recommendations}
+                     renderItem={({ item }) => (
+                        <Card
+                           id={item.id}
+                           poster={item.poster_path}
+                           title={item.original_title}
+                           rating={item.vote_average}
+                           isTvSeries={false}
+                        />
+                     )}
+                     style={{ marginHorizontal: 20, marginTop: 10 }}
+                     keyExtractor={(item) => item.id.toString()}
+                     horizontal
+                     showsHorizontalScrollIndicator={false}
+                     contentContainerStyle={{ gap: 20 }}
+                  />
+               )}
+            </ListContainer>
+         </Container>
+      </ScrollView>
    );
 };
 
@@ -107,7 +179,7 @@ const FlexColumn = styled.View`
 `;
 
 const Title = styled.Text`
-   color: ${(props) => props.theme.textColor};
+   color: ${WHITE_COLOR};
    font-size: 26px;
    font-weight: 600;
    width: 80%;
@@ -119,23 +191,32 @@ const Date = styled.Text`
 `;
 
 const PGRating = styled.Text`
-   color: rgba(255, 255, 255, 0.6);
-   font-weight: 600;
+   color: ${(props) => props.theme.textColor};
+   font-weight: 500;
 `;
 
 const SeasonOrRunTime = styled.Text`
-   color: rgba(255, 255, 255, 0.6);
-   font-weight: 600;
+   color: ${(props) => props.theme.textColor};
+   font-weight: 500;
+`;
+
+const ExtraInfo = styled.View`
+   width: 90%;
+   color: ${(props) => props.theme.textColor};
+   margin: 30px 20px 0px;
+   flex-direction: row;
+   gap: 10px;
+   align-items: center;
 `;
 
 const Overview = styled.Text`
    color: ${(props) => props.theme.textColor};
-   margin: 30px 20px;
+   margin: 10px 20px 30px;
 `;
 
 const WatchNowBtn = styled.TouchableOpacity`
    background-color: ${YELLOW_COLOR};
-   padding: 10px;
+   padding: 8px;
    border-radius: 10px;
    align-items: center;
    justify-content: center;
@@ -147,16 +228,47 @@ const WatchNowBtn = styled.TouchableOpacity`
 
 const BtnText = styled.Text`
    font-weight: 600;
-   font-size: 18px;
+   font-size: 16px;
 `;
 
 const WatchLaterbtn = styled.TouchableOpacity`
    background-color: ${WHITE_COLOR};
-   padding: 10px;
+   padding: 8px;
    margin: 20px;
    border-radius: 10px;
    align-items: center;
    justify-content: center;
-   width: 90%;
+   border: 1px solid ${(props) => props.theme.textColor};
+   width: 40%;
    align-self: center;
+`;
+
+const WatchTrailerBtn = styled.TouchableOpacity`
+   background-color: transparent;
+   border: 1px solid ${YELLOW_COLOR};
+   padding: 8px;
+   margin: 20px;
+   border-radius: 10px;
+   align-items: center;
+   justify-content: center;
+   width: 40%;
+   align-self: center;
+`;
+
+const FlexRow = styled.View`
+   flex-direction: row;
+   align-items: center;
+   justify-content: space-between;
+   width: 100%;
+`;
+
+const ListContainer = styled.View`
+   margin-top: 10px;
+`;
+
+const ListTitle = styled.Text`
+   color: ${(props) => props.theme.textColor};
+   font-size: 18px;
+   font-weight: 600;
+   margin-left: 20px;
 `;

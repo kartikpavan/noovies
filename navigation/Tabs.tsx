@@ -2,25 +2,22 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Movies from "../screens/Movies";
 import Tv from "../screens/Tv";
 import Search from "../screens/Search";
-import { useColorScheme } from "react-native";
 import { BLACK_COLOR, DARK_GREY, LIGHT_GREY, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
 import IonIcons from "@expo/vector-icons/Ionicons";
 
 const Tab = createBottomTabNavigator();
 
 function Tabs() {
-   const isDarkMode = useColorScheme() === "dark";
-
    return (
       <Tab.Navigator
          initialRouteName="Movies"
-         sceneContainerStyle={{ backgroundColor: isDarkMode ? BLACK_COLOR : WHITE_COLOR }}
+         sceneContainerStyle={{ backgroundColor: BLACK_COLOR }}
          screenOptions={{
-            tabBarActiveTintColor: isDarkMode ? YELLOW_COLOR : BLACK_COLOR,
-            tabBarInactiveTintColor: isDarkMode ? LIGHT_GREY : DARK_GREY,
-            tabBarStyle: { backgroundColor: isDarkMode ? BLACK_COLOR : WHITE_COLOR },
-            headerStyle: { backgroundColor: isDarkMode ? BLACK_COLOR : WHITE_COLOR },
-            headerTitleStyle: { color: isDarkMode ? "white" : BLACK_COLOR },
+            tabBarActiveTintColor: YELLOW_COLOR,
+            tabBarInactiveTintColor: LIGHT_GREY,
+            tabBarStyle: { backgroundColor: BLACK_COLOR },
+            headerStyle: { backgroundColor: BLACK_COLOR },
+            headerTitleStyle: { color: "white" },
             headerTitleAlign: "center",
             tabBarLabelStyle: {
                fontSize: 13,
