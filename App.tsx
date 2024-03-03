@@ -4,7 +4,6 @@ import * as Font from "expo-font";
 import IonIcons from "@expo/vector-icons/Ionicons";
 import { useAssets } from "expo-asset";
 import { NavigationContainer } from "@react-navigation/native";
-import { useColorScheme } from "react-native";
 import Root from "./navigation/RootNavigation";
 import { ThemeProvider } from "styled-components";
 import { darkTheme } from "./utils/styled";

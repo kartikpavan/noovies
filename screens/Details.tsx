@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useDetails, useCredits, useRecommendations } from "../api/details";
 import { ActivityIndicator, Alert, Dimensions, FlatList, Linking, ScrollView, StyleSheet } from "react-native";
-import { BLACK_COLOR, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
+import { BLACK_COLOR, DARK_GREY, LIGHT_GREY, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
 import Poster from "../components/Poster";
 import { getYear, makeImgPath } from "../utils/helper";
 import { LinearGradient } from "expo-linear-gradient";
@@ -12,11 +12,9 @@ import Rating from "../components/Rating";
 import Badge from "../components/Badge";
 import CastCard from "../components/CastCard";
 import Card from "../components/Card";
+import { moviesURL, tvSeriesURL } from "../utils/constants";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-
-const moviesURL = "https://api.themoviedb.org/3/movie/";
-const tvSeriesURL = "https://api.themoviedb.org/3/tv/";
 
 const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation, route }) => {
    //  ID  and isTvSeries(flag) are being recieved
@@ -34,11 +32,11 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
       else Alert.alert(`Don't know how to open this URL: ${url}`);
    };
 
-   useEffect(() => {
-      navigation.setOptions({
-         title: isTvSeries ? "TV Series" : "Movie",
-      });
-   }, []);
+   // useEffect(() => {
+   //    navigation.setOptions({
+   //       title: isTvSeries ? "TV Series" : "Movie",
+   //    });
+   // }, []);
 
    if (isLoading) {
       return (
@@ -49,7 +47,7 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
    }
 
    return (
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ backgroundColor: BLACK_COLOR }}>
          <Container>
             <Header>
                <Background style={StyleSheet.absoluteFill} source={{ uri: makeImgPath(data.backdrop_path) }} />
@@ -95,19 +93,26 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
                <BtnText style={{ color: YELLOW_COLOR }}>Play Trailer</BtnText>
             </WatchTrailerBtn>
             <ListContainer>
-               <ListTitle>Cast</ListTitle>
-               <FlatList
-                  data={movieCredits}
-                  keyExtractor={(item) => item.id.toString()}
-                  renderItem={({ item }) => <CastCard cast={item} />}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ gap: 5 }}
-                  style={{ marginHorizontal: 10, marginTop: 10 }}
-               />
+               <CastTitle>Cast</CastTitle>
+               {movieCredits?.length! > 0 ? (
+                  <FlatList
+                     data={movieCredits}
+                     keyExtractor={(item) => item.id.toString()}
+                     renderItem={({ item }) => <CastCard cast={item} />}
+                     horizontal
+                     showsHorizontalScrollIndicator={false}
+                     contentContainerStyle={{ gap: 5 }}
+                     style={{ marginHorizontal: 10, marginTop: 10 }}
+                  />
+               ) : (
+                  <CastTitle>Oops! No Cast Available</CastTitle>
+               )}
             </ListContainer>
             <ListContainer style={{ marginBottom: 20, marginTop: 20 }}>
-               <ListTitle>More like this</ListTitle>
+               <ListTitleContainer>
+                  <ListTitle>More like this</ListTitle>
+                  <ListTitle2 onPress={() => navigation.navigate("Reviews", { id, isTvSeries })}>Reviews</ListTitle2>
+               </ListTitleContainer>
                {isTvSeries ? (
                   <FlatList
                      data={recommendations}
@@ -162,6 +167,7 @@ const LoaderContainer = styled.View`
    flex: 1;
    align-items: center;
    justify-content: center;
+   background-color: ${(props) => props.theme.mainBgColor};
 `;
 
 const Header = styled.View`
@@ -268,9 +274,38 @@ const ListContainer = styled.View`
    margin-top: 10px;
 `;
 
-const ListTitle = styled.Text`
-   color: ${(props) => props.theme.textColor};
-   font-size: 18px;
+const ListTitleContainer = styled.View`
+   margin-left: 20px;
+   flex-direction: row;
+   justify-content: space-between;
+   align-items: center;
+   width: 90%;
+   text-align: center;
+`;
+
+const CastTitle = styled.Text`
+   font-size: 16px;
    font-weight: 600;
    margin-left: 20px;
+   color: ${(props) => props.theme.textColor};
+`;
+
+const ListTitle = styled.Text`
+   color: ${YELLOW_COLOR};
+   font-size: 16px;
+   font-weight: 600;
+   width: 50%;
+   border-bottom-color: ${YELLOW_COLOR};
+   border-bottom-width: 2px;
+   text-align: center;
+`;
+
+const ListTitle2 = styled.Text`
+   color: ${DARK_GREY};
+   font-size: 16px;
+   font-weight: 600;
+   border-bottom-color: ${DARK_GREY};
+   border-bottom-width: 2px;
+   width: 50%;
+   text-align: center;
 `;

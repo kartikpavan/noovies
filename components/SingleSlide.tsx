@@ -16,7 +16,7 @@ const SingleSlide = ({ movie }: Props) => {
    return (
       <View key={movie.id}>
          <BgImage source={{ uri: makeImgPath(movie.backdrop_path) }} style={StyleSheet.absoluteFill} />
-         <BlurView experimentalBlurMethod="dimezisBlurView" intensity={80} tint="dark" style={StyleSheet.absoluteFill}>
+         <BlurView experimentalBlurMethod="none" intensity={100} tint="dark" style={StyleSheet.absoluteFill}>
             <Wrapper
                onPress={() =>
                   // @ts-ignore

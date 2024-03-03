@@ -5,10 +5,7 @@ import { ActivityIndicator, FlatList, RefreshControl, ScrollView } from "react-n
 import { YELLOW_COLOR } from "../utils/colors";
 import { useQueryClient } from "react-query";
 import Card from "../components/Card";
-
-const airingNowSeriesUrl = "https://api.themoviedb.org/3/tv/airing_today?language=en-US&page=1";
-const trendingSeriesUrl = "https://api.themoviedb.org/3/tv/popular?language=en-US&page=1";
-const topRatedSeriesUrl = "https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1";
+import { airingNowSeriesUrl, topRatedSeriesUrl, trendingSeriesUrl } from "../utils/constants";
 
 const Tv = () => {
    const queryClient = useQueryClient();

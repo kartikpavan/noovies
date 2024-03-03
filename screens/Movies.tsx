@@ -9,11 +9,9 @@ import LargeCard from "../components/LargeCard";
 import Card from "../components/Card";
 import { useMovies } from "../api/movies";
 import { useQueryClient } from "react-query";
+import { nowPlayingMoviesUrl, popularMoviesUrl, upcomingMoviesUrl } from "../utils/constants";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-const nowPlayingMoviesUrl = "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1&region=IN";
-const popularMoviesUrl = "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&region=IN";
-const upcomingMoviesUrl = "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1&region=IN";
 
 const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = () => {
    const queryClient = useQueryClient();
