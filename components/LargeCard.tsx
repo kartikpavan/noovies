@@ -2,27 +2,31 @@ import React from "react";
 import styled from "styled-components/native";
 import Poster from "./Poster";
 import { makeImgPath } from "../utils/helper";
-import { Movie } from "../utils/types";
 import { YELLOW_COLOR } from "../utils/colors";
 import { useNavigation } from "@react-navigation/native";
 
 type Props = {
-   movie: Movie;
+   id: number;
+   title: string;
+   release_date: string;
+   overview: string;
+   poster_path: string;
 };
 
-const LargeCard = ({ movie }: Props) => {
+const LargeCard = ({ id, title, release_date, overview, poster_path }: Props) => {
    const navigation = useNavigation();
    return (
       <View
          onPress={() => {
             // @ts-ignore
-            navigation.navigate("Stack", { screen: "MovieDetails", params: { id: movie.id } });
-         }}>
-         <Poster imgUrl={makeImgPath(movie.poster_path)} />
+            navigation.navigate("Stack", { screen: "MovieDetails", params: { id: id } });
+         }}
+      >
+         <Poster imgUrl={makeImgPath(poster_path)} />
          <Column>
-            <Title>{movie.title}</Title>
-            <Date>{movie.release_date}</Date>
-            <Description>{movie.overview.slice(0, 100)}...</Description>
+            <Title>{title}</Title>
+            <Date>{release_date}</Date>
+            <Description>{overview.slice(0, 100)}...</Description>
          </Column>
       </View>
    );

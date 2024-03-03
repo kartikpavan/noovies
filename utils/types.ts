@@ -109,3 +109,10 @@ export interface MovieCast {
    credit_id: string;
    order: number;
 }
+
+export type FavoriteItem = {
+   id: string;
+   title: string | undefined;
+   poster_path: string | undefined;
+   mediaType: "tv" | "movie";
+};

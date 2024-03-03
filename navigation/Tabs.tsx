@@ -4,6 +4,7 @@ import Tv from "../screens/Tv";
 import Search from "../screens/Search";
 import { BLACK_COLOR, DARK_GREY, LIGHT_GREY, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
 import IonIcons from "@expo/vector-icons/Ionicons";
+import Favorites from "../screens/Favorites";
 
 const Tab = createBottomTabNavigator();
 
@@ -24,7 +25,8 @@ function Tabs() {
                fontWeight: "600",
                marginTop: 0,
             },
-         }}>
+         }}
+      >
          <Tab.Screen
             name="Movies"
             component={Movies}
@@ -32,7 +34,9 @@ function Tabs() {
                tabBarLabel: "Movies",
                // color is coming from screenOptions
                tabBarIcon: ({ focused, color, size }) => {
-                  return <IonIcons name={focused ? "film" : "film-outline"} size={size} color={color} />;
+                  return (
+                     <IonIcons name={focused ? "film" : "film-outline"} size={size} color={color} />
+                  );
                },
             }}
          />
@@ -43,7 +47,9 @@ function Tabs() {
                tabBarLabel: "TV",
                // color is coming from screenOptions
                tabBarIcon: ({ focused, color, size }) => {
-                  return <IonIcons name={focused ? "tv" : "tv-outline"} size={size} color={color} />;
+                  return (
+                     <IonIcons name={focused ? "tv" : "tv-outline"} size={size} color={color} />
+                  );
                },
             }}
          />
@@ -55,7 +61,28 @@ function Tabs() {
                // color is coming from screenOptions
                tabBarIcon: ({ focused, color, size }) => {
                   return (
-                     <IonIcons name={focused ? "search-circle" : "search-circle-outline"} size={size} color={color} />
+                     <IonIcons
+                        name={focused ? "search-circle" : "search-circle-outline"}
+                        size={size}
+                        color={color}
+                     />
+                  );
+               },
+            }}
+         />
+         <Tab.Screen
+            name="My List"
+            component={Favorites}
+            options={{
+               tabBarLabel: "Favorites",
+               // color is coming from screenOptions
+               tabBarIcon: ({ focused, color, size }) => {
+                  return (
+                     <IonIcons
+                        name={focused ? "heart-sharp" : "heart-outline"}
+                        size={size}
+                        color={color}
+                     />
                   );
                },
             }}

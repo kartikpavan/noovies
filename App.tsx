@@ -9,6 +9,8 @@ import { ThemeProvider } from "styled-components";
 import { darkTheme } from "./utils/styled";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SearchContextProvider } from "./context/SearchContext";
+import Toast from "react-native-toast-message";
+
 const queryClient = new QueryClient();
 
 export default function App() {
@@ -41,14 +43,17 @@ export default function App() {
 
    return (
       // ThemeProvider Coming from styled-components
-      <QueryClientProvider client={queryClient}>
-         <ThemeProvider theme={darkTheme}>
-            <SearchContextProvider>
-               <NavigationContainer>
-                  <Root />
-               </NavigationContainer>
-            </SearchContextProvider>
-         </ThemeProvider>
-      </QueryClientProvider>
+      <>
+         <QueryClientProvider client={queryClient}>
+            <ThemeProvider theme={darkTheme}>
+               <SearchContextProvider>
+                  <NavigationContainer>
+                     <Root />
+                  </NavigationContainer>
+               </SearchContextProvider>
+            </ThemeProvider>
+         </QueryClientProvider>
+         <Toast position="top" />
+      </>
    );
 }

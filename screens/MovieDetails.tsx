@@ -1,5 +1,5 @@
 import { styled } from "styled-components/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCredits, useRecommendations } from "../api/details";
 import {
@@ -24,6 +24,9 @@ import { moviesURL } from "../utils/constants";
 import MovieCard from "../components/MovieCard";
 import { useMovieDetails } from "../api/movies";
 import MyModal from "../components/MyModal";
+import Toast from "react-native-toast-message";
+import { getValueFromStore, saveToStore } from "../utils/storage";
+import { FavoriteItem } from "../utils/types";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -31,10 +34,11 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
    navigation,
    route,
 }) => {
-   const [modalVisible, setModalVisible] = useState<boolean>(false);
-
    const id = route.params?.id;
    console.log(id);
+   const [modalVisible, setModalVisible] = useState<boolean>(false);
+   const [favoriteItems, setFavoriteItems] = useState<FavoriteItem[]>([]);
+
    const { data, isLoading } = useMovieDetails(moviesURL, id);
    const { data: movieCredits, isLoading: isLoadingCredits } = useCredits(moviesURL, id);
    const { data: recommendations, isLoading: isLoadingRecommendations } = useRecommendations(
@@ -57,6 +61,48 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
          title: data?.original_title,
       });
    };
+
+   // Add a favorite item to the stored array
+   async function addFavoriteItem(favItem: FavoriteItem) {
+      let favoriteItems = await getValueFromStore("favoriteItems"); // Retrieve the current favorite items
+
+      let parsedFavoriteItems: FavoriteItem[] = [];
+      if (favoriteItems) {
+         parsedFavoriteItems = JSON.parse(favoriteItems); // Parse the JSON string back into an array
+      }
+
+      const itemIndex = parsedFavoriteItems.findIndex((item) => item.id === favItem.id);
+      // Item is already in favorites, remove it
+      if (itemIndex !== -1) {
+         parsedFavoriteItems.splice(itemIndex, 1);
+      } else {
+         // Item is not in favorites, add it
+         parsedFavoriteItems.push(favItem);
+      }
+
+      await saveToStore("favoriteItems", JSON.stringify(parsedFavoriteItems)); // Save the updated array back to the store
+      setFavoriteItems(parsedFavoriteItems); // Update the state
+      Toast.show({
+         type: itemIndex !== -1 ? "error" : "success",
+         text1: itemIndex !== -1 ? "Removed from Favorites" : "Added to Favorites",
+      });
+   }
+
+   // Get the favorite items from the store to toggle te bookmark icon
+   useEffect(() => {
+      async function getFavoriteItems() {
+         let favoriteItems = await getValueFromStore("favoriteItems"); // Retrieve the stored favorite items
+
+         let parsedFavoriteItems: FavoriteItem[] = [];
+         if (favoriteItems) {
+            parsedFavoriteItems = JSON.parse(favoriteItems); // Parse the JSON string back into an array
+         }
+         setFavoriteItems(parsedFavoriteItems);
+      }
+      getFavoriteItems();
+   }, []);
+
+   const isInFavorites = favoriteItems.some((item) => item.id === id);
 
    if (isLoading || isLoadingCredits || isLoadingRecommendations) {
       return (
@@ -98,7 +144,19 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
                   </Badge>
                </FlexRow>
                <IconsContainer>
-                  <IonIcons name="bookmark-outline" size={22} color={WHITE_COLOR} />
+                  <IonIcons
+                     onPress={() =>
+                        addFavoriteItem({
+                           id: id,
+                           title: data?.original_title,
+                           poster_path: data?.poster_path,
+                           mediaType: "movie",
+                        })
+                     }
+                     name={isInFavorites ? "bookmark" : "bookmark-outline"}
+                     size={22}
+                     color={isInFavorites ? YELLOW_COLOR : WHITE_COLOR}
+                  />
                   <IonIcons
                      onPress={ShareMedia}
                      name="share-social-outline"

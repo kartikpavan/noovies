@@ -108,7 +108,15 @@ const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = () => {
          )}
          // rendering the upcoming movies list
          data={upcomingMovies}
-         renderItem={({ item }) => <LargeCard movie={item} />}
+         renderItem={({ item }) => (
+            <LargeCard
+               id={item.id}
+               title={item.original_title}
+               overview={item.overview}
+               release_date={item.release_date}
+               poster_path={item.poster_path}
+            />
+         )}
          keyExtractor={(item) => item.id.toString() + new Date().toString()}
       />
    );
