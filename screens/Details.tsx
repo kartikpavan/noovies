@@ -7,7 +7,6 @@ import {
    Alert,
    Dimensions,
    FlatList,
-   Linking,
    ScrollView,
    Share,
    StyleSheet,
@@ -26,6 +25,7 @@ import { FavoriteItem } from "../utils/types";
 import { getValueFromStore, saveToStore } from "../utils/storage";
 import Toast from "react-native-toast-message";
 import * as WebBrowser from "expo-web-browser";
+import { useTrailer } from "../api/movies";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -41,12 +41,26 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
       tvSeriesURL,
       id
    );
+   const { data: trailer, isLoading: isLoadingTrailer } = useTrailer(tvSeriesURL, id);
 
    // Watch Movie / Series
-   const openURL = async () => {
+   const playTvSeries = async () => {
       await WebBrowser.openBrowserAsync(convertToUrl(id, "tv"));
    };
 
+   // Open YT to play trailer
+   // Open YT to play trailer
+   const playTrailer = async () => {
+      if (isLoadingTrailer) {
+         // Handle the case when trailer data is still loading
+      } else if (trailer && trailer.length > 0) {
+         const url = `https://www.youtube.com/watch?v=${trailer[0].key}`;
+         await WebBrowser.openBrowserAsync(url);
+      } else {
+         // Handle the case when trailer data is not available
+         Alert.alert("Trailer not available");
+      }
+   };
    // Share Media
    const ShareMedia = async () => {
       await Share.share({
@@ -162,12 +176,12 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
             </ExtraInfo>
             {data?.overview && <Overview>{data.overview}</Overview>}
             {data?.homepage && (
-               <WatchNowBtn onPress={openURL}>
+               <WatchNowBtn onPress={playTvSeries}>
                   <IonIcons name="play" size={20} color={BLACK_COLOR} />
                   <BtnText>Watch Now</BtnText>
                </WatchNowBtn>
             )}
-            <WatchTrailerBtn>
+            <WatchTrailerBtn onPress={playTrailer}>
                <BtnText style={{ color: YELLOW_COLOR }}>Play Trailer</BtnText>
             </WatchTrailerBtn>
             <ListContainer>

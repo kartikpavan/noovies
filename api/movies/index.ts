@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { Movie, MovieCast, MovieDetail, Review } from "../../utils/types";
+import { Movie, MovieCast, MovieDetail, Trailer } from "../../utils/types";
 
 const options = {
    method: "GET",
@@ -23,7 +23,7 @@ export const useMovies = (url: string) => {
 
 export const useMovieDetails = (url: string, id: string) => {
    return useQuery<MovieDetail>({
-      queryKey: ["movieDetails", id],
+      queryKey: ["movieDetails", `movie${id}`],
       queryFn: async () => {
          const response = await fetch(url + id, options);
          const data = await response.json();
@@ -39,6 +39,17 @@ export const useMovieCredits = (url: string, id: string) => {
          const response = await fetch(url + id + "/credits", options);
          const data = await response.json();
          return data.cast;
+      },
+   });
+};
+
+export const useTrailer = (url: string, id: string) => {
+   return useQuery<Trailer[]>({
+      queryKey: ["movieTrailers", id],
+      queryFn: async () => {
+         const response = await fetch(url + id + "/videos", options);
+         const data = await response.json();
+         return data.results;
       },
    });
 };

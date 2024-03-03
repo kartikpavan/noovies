@@ -7,7 +7,6 @@ import {
    Alert,
    Dimensions,
    FlatList,
-   Linking,
    ScrollView,
    Share,
    StyleSheet,
@@ -22,8 +21,7 @@ import Badge from "../components/Badge";
 import CastCard from "../components/CastCard";
 import { moviesURL } from "../utils/constants";
 import MovieCard from "../components/MovieCard";
-import { useMovieDetails } from "../api/movies";
-import MyModal from "../components/MyModal";
+import { useMovieDetails, useTrailer } from "../api/movies";
 import Toast from "react-native-toast-message";
 import { getValueFromStore, saveToStore } from "../utils/storage";
 import { FavoriteItem } from "../utils/types";
@@ -37,7 +35,6 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
 }) => {
    const id = route.params?.id;
    console.log(id);
-   const [modalVisible, setModalVisible] = useState<boolean>(false);
    const [favoriteItems, setFavoriteItems] = useState<FavoriteItem[]>([]);
 
    const { data, isLoading } = useMovieDetails(moviesURL, id);
@@ -46,19 +43,27 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
       moviesURL,
       id
    );
+   const { data: trailer, isLoading: isLoadingTrailer } = useTrailer(moviesURL, id);
 
    // Watch Movie / Series
-   // const OpenURL = async () => {
-   //    const url = convertToUrl(id, "movie");
-   //    console.log(url);
-   //    const supported = await Linking.canOpenURL(url);
-   //    if (supported) await Linking.openURL(url);
-   //    else Alert.alert(`Don't know how to open this URL: ${url}`);
-   // };
-
-   // Watch Movie / Series
-   const openURL = async () => {
+   const playMovie = async () => {
       await WebBrowser.openBrowserAsync(convertToUrl(id, "movie"));
+   };
+
+   // Open YT to play trailer
+   const playTrailer = async () => {
+      if (isLoadingTrailer) {
+         // Handle the case when trailer data is still loading
+      } else if (trailer && trailer.length > 0) {
+         const url = `https://www.youtube.com/watch?v=${trailer[0].key}`;
+         await WebBrowser.openBrowserAsync(url);
+      } else {
+         // Handle the case when trailer data is not available
+         Toast.show({
+            type: "error",
+            text1: "Trailer not available",
+         });
+      }
    };
 
    // Share Media
@@ -112,7 +117,7 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
 
    const isInFavorites = favoriteItems.some((item) => item.id === id);
 
-   if (isLoading || isLoadingCredits || isLoadingRecommendations) {
+   if (isLoading || isLoadingCredits || isLoadingRecommendations || isLoadingTrailer) {
       return (
          <LoaderContainer>
             <ActivityIndicator size={"large"} color={YELLOW_COLOR} />
@@ -138,7 +143,7 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
                <Column>
                   {data?.poster_path && <Poster imgUrl={makeImgPath(data.poster_path)} />}
                   <FlexColumn>
-                     <Title>{data?.original_title}</Title>
+                     {data?.title && <Title>{data?.title}</Title>}
                      {data?.release_date && <Date>{getYear(data?.release_date)}</Date>}
                   </FlexColumn>
                </Column>
@@ -156,7 +161,7 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
                      onPress={() =>
                         addFavoriteItem({
                            id: id,
-                           title: data?.original_title,
+                           title: data?.title,
                            poster_path: data?.poster_path,
                            mediaType: "movie",
                         })
@@ -175,15 +180,14 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
             </ExtraInfo>
             {data?.overview && <Overview>{data.overview}</Overview>}
             {data?.homepage && (
-               <WatchNowBtn onPress={openURL}>
+               <WatchNowBtn onPress={() => playMovie()}>
                   <IonIcons name="play" size={20} color={BLACK_COLOR} />
                   <BtnText>Watch Now</BtnText>
                </WatchNowBtn>
             )}
-            <WatchTrailerBtn onPress={() => setModalVisible(!modalVisible)}>
+            <WatchTrailerBtn onPress={() => playTrailer()}>
                <BtnText style={{ color: YELLOW_COLOR }}>Play Trailer</BtnText>
             </WatchTrailerBtn>
-            <MyModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
             <ListContainer>
                <CastTitle>Cast</CastTitle>
                {movieCredits?.length! > 0 ? (
