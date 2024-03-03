@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { BLACK_COLOR, DARK_GREY, LIGHT_GREY, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
 import Poster from "../components/Poster";
-import { getYear, makeImgPath } from "../utils/helper";
+import { convertToUrl, getYear, makeImgPath } from "../utils/helper";
 import { LinearGradient } from "expo-linear-gradient";
 import IonIcons from "@expo/vector-icons/Ionicons";
 import Rating from "../components/Rating";
@@ -25,6 +25,7 @@ import TvCard from "../components/TvCard";
 import { FavoriteItem } from "../utils/types";
 import { getValueFromStore, saveToStore } from "../utils/storage";
 import Toast from "react-native-toast-message";
+import * as WebBrowser from "expo-web-browser";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -42,10 +43,8 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
    );
 
    // Watch Movie / Series
-   const OpenURL = async (url: string) => {
-      const supported = await Linking.canOpenURL(url);
-      if (supported) await Linking.openURL(url);
-      else Alert.alert(`Don't know how to open this URL: ${url}`);
+   const openURL = async () => {
+      await WebBrowser.openBrowserAsync(convertToUrl(id, "tv"));
    };
 
    // Share Media
@@ -163,7 +162,7 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
             </ExtraInfo>
             {data?.overview && <Overview>{data.overview}</Overview>}
             {data?.homepage && (
-               <WatchNowBtn onPress={() => OpenURL(data?.homepage)}>
+               <WatchNowBtn onPress={openURL}>
                   <IonIcons name="play" size={20} color={BLACK_COLOR} />
                   <BtnText>Watch Now</BtnText>
                </WatchNowBtn>

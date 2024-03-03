@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { BLACK_COLOR, DARK_GREY, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
 import Poster from "../components/Poster";
-import { getYear, makeImgPath } from "../utils/helper";
+import { convertToUrl, getYear, makeImgPath } from "../utils/helper";
 import { LinearGradient } from "expo-linear-gradient";
 import IonIcons from "@expo/vector-icons/Ionicons";
 import Rating from "../components/Rating";
@@ -27,6 +27,7 @@ import MyModal from "../components/MyModal";
 import Toast from "react-native-toast-message";
 import { getValueFromStore, saveToStore } from "../utils/storage";
 import { FavoriteItem } from "../utils/types";
+import * as WebBrowser from "expo-web-browser";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -47,10 +48,17 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
    );
 
    // Watch Movie / Series
-   const OpenURL = async (url: string) => {
-      const supported = await Linking.canOpenURL(url);
-      if (supported) await Linking.openURL(url);
-      else Alert.alert(`Don't know how to open this URL: ${url}`);
+   // const OpenURL = async () => {
+   //    const url = convertToUrl(id, "movie");
+   //    console.log(url);
+   //    const supported = await Linking.canOpenURL(url);
+   //    if (supported) await Linking.openURL(url);
+   //    else Alert.alert(`Don't know how to open this URL: ${url}`);
+   // };
+
+   // Watch Movie / Series
+   const openURL = async () => {
+      await WebBrowser.openBrowserAsync(convertToUrl(id, "movie"));
    };
 
    // Share Media
@@ -167,7 +175,7 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
             </ExtraInfo>
             {data?.overview && <Overview>{data.overview}</Overview>}
             {data?.homepage && (
-               <WatchNowBtn onPress={() => OpenURL(data.homepage)}>
+               <WatchNowBtn onPress={openURL}>
                   <IonIcons name="play" size={20} color={BLACK_COLOR} />
                   <BtnText>Watch Now</BtnText>
                </WatchNowBtn>
