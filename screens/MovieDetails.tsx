@@ -9,6 +9,7 @@ import {
    FlatList,
    Linking,
    ScrollView,
+   Share,
    StyleSheet,
 } from "react-native";
 import { BLACK_COLOR, DARK_GREY, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
@@ -46,6 +47,15 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
       const supported = await Linking.canOpenURL(url);
       if (supported) await Linking.openURL(url);
       else Alert.alert(`Don't know how to open this URL: ${url}`);
+   };
+
+   // Share Media
+   const ShareMedia = async () => {
+      await Share.share({
+         url: `https://www.imdb.com/title/${data?.imdb_id}`,
+         message: data?.overview,
+         title: data?.original_title,
+      });
    };
 
    if (isLoading || isLoadingCredits || isLoadingRecommendations) {
@@ -90,7 +100,7 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
                <IconsContainer>
                   <IonIcons name="bookmark-outline" size={22} color={WHITE_COLOR} />
                   <IonIcons
-                     onPress={() => Alert.alert("Share", "Coming Soon")}
+                     onPress={ShareMedia}
                      name="share-social-outline"
                      size={22}
                      color={WHITE_COLOR}

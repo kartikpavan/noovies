@@ -2,7 +2,16 @@ import { styled } from "styled-components/native";
 import React from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useDetails, useCredits, useRecommendations } from "../api/details";
-import { ActivityIndicator, Alert, Dimensions, FlatList, Linking, ScrollView, StyleSheet } from "react-native";
+import {
+   ActivityIndicator,
+   Alert,
+   Dimensions,
+   FlatList,
+   Linking,
+   ScrollView,
+   Share,
+   StyleSheet,
+} from "react-native";
 import { BLACK_COLOR, DARK_GREY, LIGHT_GREY, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
 import Poster from "../components/Poster";
 import { getYear, makeImgPath } from "../utils/helper";
@@ -11,9 +20,8 @@ import IonIcons from "@expo/vector-icons/Ionicons";
 import Rating from "../components/Rating";
 import Badge from "../components/Badge";
 import CastCard from "../components/CastCard";
-import { moviesURL, tvSeriesURL } from "../utils/constants";
+import { tvSeriesURL } from "../utils/constants";
 import TvCard from "../components/TvCard";
-import MovieCard from "../components/MovieCard";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -22,8 +30,11 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
    const id = route.params?.id;
    console.log(id);
    const { data, isLoading } = useDetails(tvSeriesURL, id);
-   const { data: movieCredits } = useCredits(tvSeriesURL, id);
-   const { data: recommendations } = useRecommendations(tvSeriesURL, id);
+   const { data: credits, isLoading: isLoadingCredits } = useCredits(tvSeriesURL, id);
+   const { data: recommendations, isLoading: isLoadingRecommendations } = useRecommendations(
+      tvSeriesURL,
+      id
+   );
 
    // Watch Movie / Series
    const OpenURL = async (url: string) => {
@@ -32,7 +43,16 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
       else Alert.alert(`Don't know how to open this URL: ${url}`);
    };
 
-   if (isLoading) {
+   // Share Media
+   const ShareMedia = async () => {
+      await Share.share({
+         url: data?.homepage,
+         message: data?.overview,
+         title: data?.name,
+      });
+   };
+
+   if (isLoading || isLoadingCredits || isLoadingRecommendations) {
       return (
          <LoaderContainer>
             <ActivityIndicator size={"large"} color={YELLOW_COLOR} />
@@ -44,7 +64,10 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
       <ScrollView contentContainerStyle={{ backgroundColor: BLACK_COLOR }}>
          <Container>
             <Header>
-               <Background style={StyleSheet.absoluteFill} source={{ uri: makeImgPath(data.backdrop_path) }} />
+               <Background
+                  style={StyleSheet.absoluteFill}
+                  source={{ uri: makeImgPath(data.backdrop_path) }}
+               />
                <LinearGradient
                   // Background Linear Gradient
                   colors={["transparent", BLACK_COLOR]}
@@ -61,7 +84,9 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
             <ExtraInfo>
                <FlexRow>
                   <Rating movieRating={data?.vote_average} />
-                  {data?.seasons?.length && <SeasonOrRunTime>{`${data.seasons.length} seasons`}</SeasonOrRunTime>}
+                  {data?.seasons?.length && (
+                     <SeasonOrRunTime>{`${data.seasons.length} seasons`}</SeasonOrRunTime>
+                  )}
                   {data?.runtime && <SeasonOrRunTime>{`${data.runtime}m`}</SeasonOrRunTime>}
                   <Badge>
                      <PGRating>{data?.adult ? "A 18+" : "U/A 13+"}</PGRating>
@@ -70,7 +95,7 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
                <IconsContainer>
                   <IonIcons name="bookmark-outline" size={22} color={WHITE_COLOR} />
                   <IonIcons
-                     onPress={() => Alert.alert("Share", "Coming Soon")}
+                     onPress={ShareMedia}
                      name="share-social-outline"
                      size={22}
                      color={WHITE_COLOR}
@@ -79,7 +104,7 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
             </ExtraInfo>
             {data?.overview && <Overview>{data.overview}</Overview>}
             {data?.homepage && (
-               <WatchNowBtn onPress={() => OpenURL(data.homepage)}>
+               <WatchNowBtn onPress={() => OpenURL(data?.homepage)}>
                   <IonIcons name="play" size={20} color={BLACK_COLOR} />
                   <BtnText>Watch Now</BtnText>
                </WatchNowBtn>
@@ -89,9 +114,9 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
             </WatchTrailerBtn>
             <ListContainer>
                <CastTitle>Cast</CastTitle>
-               {movieCredits?.length! > 0 ? (
+               {credits?.length! > 0 ? (
                   <FlatList
-                     data={movieCredits}
+                     data={credits}
                      keyExtractor={(item) => item.id.toString()}
                      renderItem={({ item }) => <CastCard cast={item} />}
                      horizontal
@@ -106,7 +131,9 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
             <ListContainer style={{ marginBottom: 20, marginTop: 20 }}>
                <ListTitleContainer>
                   <ListTitle>More like this</ListTitle>
-                  <ListTitle2 onPress={() => navigation.navigate("Reviews", { id, isTvSeries: true })}>
+                  <ListTitle2
+                     onPress={() => navigation.navigate("Reviews", { id, isTvSeries: true })}
+                  >
                      Reviews
                   </ListTitle2>
                </ListTitleContainer>
