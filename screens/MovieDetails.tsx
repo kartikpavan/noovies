@@ -65,7 +65,7 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
    const ShareMedia = async () => {
       await Share.share({
          url: `https://www.imdb.com/title/${data?.imdb_id}`,
-         message: data?.overview,
+         message: `https://www.imdb.com/title/${data?.imdb_id}`,
          title: data?.original_title,
       });
    };

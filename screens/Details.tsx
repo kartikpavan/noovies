@@ -50,9 +50,9 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
    // Share Media
    const ShareMedia = async () => {
       await Share.share({
-         url: data?.homepage,
-         message: data?.overview,
-         title: data?.name,
+         url: `${data?.homepage}`,
+         message: `${data?.homepage}`,
+         title: data?.original_title,
       });
    };
 
