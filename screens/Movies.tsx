@@ -6,10 +6,11 @@ import { ActivityIndicator, Dimensions, FlatList, RefreshControl } from "react-n
 import { YELLOW_COLOR } from "../utils/colors";
 import SingleSlide from "../components/SingleSlide";
 import LargeCard from "../components/LargeCard";
-import Card from "../components/Card";
+import Card from "../components/TvCard";
 import { useMovies } from "../api/movies";
 import { useQueryClient } from "react-query";
 import { nowPlayingMoviesUrl, popularMoviesUrl, upcomingMoviesUrl } from "../utils/constants";
+import MovieCard from "../components/MovieCard";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -84,12 +85,11 @@ const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = () => {
                   <FlatList
                      data={popularMovies}
                      renderItem={({ item }) => (
-                        <Card
+                        <MovieCard
                            id={item.id}
                            title={item.original_title}
                            poster={item.poster_path}
                            rating={item.vote_average}
-                           isTvSeries={false}
                         />
                      )}
                      keyExtractor={(item) => item.id.toString()}

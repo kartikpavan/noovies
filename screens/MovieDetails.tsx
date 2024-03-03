@@ -1,9 +1,9 @@
 import { styled } from "styled-components/native";
 import React from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useDetails, useCredits, useRecommendations } from "../api/details";
+import { useCredits, useRecommendations } from "../api/details";
 import { ActivityIndicator, Alert, Dimensions, FlatList, Linking, ScrollView, StyleSheet } from "react-native";
-import { BLACK_COLOR, DARK_GREY, LIGHT_GREY, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
+import { BLACK_COLOR, DARK_GREY, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
 import Poster from "../components/Poster";
 import { getYear, makeImgPath } from "../utils/helper";
 import { LinearGradient } from "expo-linear-gradient";
@@ -11,20 +11,18 @@ import IonIcons from "@expo/vector-icons/Ionicons";
 import Rating from "../components/Rating";
 import Badge from "../components/Badge";
 import CastCard from "../components/CastCard";
-import { moviesURL, tvSeriesURL } from "../utils/constants";
-import TvCard from "../components/TvCard";
+import { moviesURL } from "../utils/constants";
 import MovieCard from "../components/MovieCard";
+import { useMovieDetails } from "../api/movies";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation, route }) => {
-   //  ID  and isTvSeries(flag) are being recieved
+const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({ navigation, route }) => {
    const id = route.params?.id;
-   const isTvSeries = route.params?.isTvSeries;
    console.log(id);
-   const { data, isLoading } = useDetails(isTvSeries ? tvSeriesURL : moviesURL, id);
-   const { data: movieCredits } = useCredits(isTvSeries ? tvSeriesURL : moviesURL, id);
-   const { data: recommendations } = useRecommendations(isTvSeries ? tvSeriesURL : moviesURL, id);
+   const { data, isLoading } = useMovieDetails(moviesURL, id);
+   const { data: movieCredits } = useCredits(moviesURL, id);
+   const { data: recommendations } = useRecommendations(moviesURL, id);
 
    // Watch Movie / Series
    const OpenURL = async (url: string) => {
@@ -51,25 +49,25 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
       <ScrollView contentContainerStyle={{ backgroundColor: BLACK_COLOR }}>
          <Container>
             <Header>
-               <Background style={StyleSheet.absoluteFill} source={{ uri: makeImgPath(data.backdrop_path) }} />
+               {data?.backdrop_path && (
+                  <Background style={StyleSheet.absoluteFill} source={{ uri: makeImgPath(data.backdrop_path) }} />
+               )}
                <LinearGradient
                   // Background Linear Gradient
                   colors={["transparent", BLACK_COLOR]}
                   style={StyleSheet.absoluteFill}
                />
                <Column>
-                  <Poster imgUrl={makeImgPath(data.poster_path)} />
+                  {data?.poster_path && <Poster imgUrl={makeImgPath(data.poster_path)} />}
                   <FlexColumn>
-                     <Title>{data?.name || data?.original_title}</Title>
-                     {data?.first_air_date && <Date>{getYear(data?.first_air_date)}</Date>}
+                     <Title>{data?.original_title}</Title>
                      {data?.release_date && <Date>{getYear(data?.release_date)}</Date>}
                   </FlexColumn>
                </Column>
             </Header>
             <ExtraInfo>
                <FlexRow>
-                  <Rating movieRating={data?.vote_average} />
-                  {data?.seasons?.length && <SeasonOrRunTime>{`${data.seasons.length} seasons`}</SeasonOrRunTime>}
+                  {data?.vote_average && <Rating movieRating={data.vote_average} />}
                   {data?.runtime && <SeasonOrRunTime>{`${data.runtime}m`}</SeasonOrRunTime>}
                   <Badge>
                      <PGRating>{data?.adult ? "A 18+" : "U/A 13+"}</PGRating>
@@ -85,11 +83,14 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
                   />
                </IconsContainer>
             </ExtraInfo>
-            <Overview>{data.overview}</Overview>
-            <WatchNowBtn onPress={() => OpenURL(data.homepage)}>
-               <IonIcons name="play" size={20} color={BLACK_COLOR} />
-               <BtnText>Watch Now</BtnText>
-            </WatchNowBtn>
+            {data?.overview && <Overview>{data.overview}</Overview>}
+            {data?.homepage && (
+               <WatchNowBtn onPress={() => OpenURL(data.homepage)}>
+                  <IonIcons name="play" size={20} color={BLACK_COLOR} />
+                  <BtnText>Watch Now</BtnText>
+               </WatchNowBtn>
+            )}
+
             <WatchTrailerBtn>
                <BtnText style={{ color: YELLOW_COLOR }}>Play Trailer</BtnText>
             </WatchTrailerBtn>
@@ -112,51 +113,33 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
             <ListContainer style={{ marginBottom: 20, marginTop: 20 }}>
                <ListTitleContainer>
                   <ListTitle>More like this</ListTitle>
-                  <ListTitle2 onPress={() => navigation.navigate("Reviews", { id, isTvSeries })}>Reviews</ListTitle2>
+                  <ListTitle2 onPress={() => navigation.navigate("Reviews", { id, isTvSeries: false })}>
+                     Reviews
+                  </ListTitle2>
                </ListTitleContainer>
-               {isTvSeries ? (
-                  <FlatList
-                     data={recommendations}
-                     renderItem={({ item }) => (
-                        <TvCard
-                           id={item.id}
-                           poster={item.poster_path}
-                           title={item.original_name}
-                           rating={item.vote_average}
-                           isTvSeries
-                        />
-                     )}
-                     style={{ marginHorizontal: 20, marginTop: 10 }}
-                     keyExtractor={(item) => item.id.toString()}
-                     horizontal
-                     showsHorizontalScrollIndicator={false}
-                     contentContainerStyle={{ gap: 20 }}
-                  />
-               ) : (
-                  <FlatList
-                     data={recommendations}
-                     renderItem={({ item }) => (
-                        <MovieCard
-                           id={item.id}
-                           poster={item.poster_path}
-                           title={item.original_title}
-                           rating={item.vote_average}
-                        />
-                     )}
-                     style={{ marginHorizontal: 20, marginTop: 10 }}
-                     keyExtractor={(item) => item.id.toString()}
-                     horizontal
-                     showsHorizontalScrollIndicator={false}
-                     contentContainerStyle={{ gap: 20 }}
-                  />
-               )}
+               <FlatList
+                  data={recommendations}
+                  renderItem={({ item }) => (
+                     <MovieCard
+                        id={item.id}
+                        poster={item.poster_path}
+                        title={item.original_title}
+                        rating={item.vote_average}
+                     />
+                  )}
+                  style={{ marginHorizontal: 20, marginTop: 20 }}
+                  keyExtractor={(item) => item.id.toString()}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: 20 }}
+               />
             </ListContainer>
          </Container>
       </ScrollView>
    );
 };
 
-export default Details;
+export default MovieDetails;
 
 const Container = styled.View`
    flex: 1;

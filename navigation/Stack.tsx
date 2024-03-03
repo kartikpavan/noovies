@@ -3,6 +3,7 @@ import React from "react";
 import Details from "../screens/Details";
 import { BLACK_COLOR, WHITE_COLOR } from "../utils/colors";
 import Reviews from "../screens/Reviews";
+import MovieDetails from "../screens/MovieDetails";
 
 const NativeStack = createNativeStackNavigator();
 
@@ -16,6 +17,7 @@ function Stack() {
             headerTintColor: WHITE_COLOR,
          }}>
          <NativeStack.Screen name="Details" component={Details} />
+         <NativeStack.Screen name="MovieDetails" component={MovieDetails} />
          <NativeStack.Screen name="Reviews" component={Reviews} />
       </NativeStack.Navigator>
    );

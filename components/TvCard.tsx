@@ -4,38 +4,31 @@ import Poster from "./Poster";
 import { makeImgPath } from "../utils/helper";
 import Rating from "./Rating";
 import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native";
 
 type Props = { id: number; poster: string; title: string; rating: number; isTvSeries: boolean };
 
-const SearchCard = ({ poster, title, rating, id, isTvSeries = true }: Props) => {
+const TvCard = ({ poster, title, rating, id, isTvSeries = true }: Props) => {
    const navigation = useNavigation();
    return (
-      <Container
-         onPress={() =>
+      <TouchableOpacity
+         onPress={() => {
             // @ts-ignore
-            navigation.navigate("Stack", {
-               screen: isTvSeries ? "Details" : "MovieDetails",
-               params: { id, isTvSeries },
-            })
-         }>
-         <SingleMovieCard>
+            navigation.navigate("Stack", { screen: "Details", params: { id, title, isTvSeries } });
+         }}>
+         <SingleTvCard>
             <Poster imgUrl={makeImgPath(poster)} />
             <Title>{title.slice(0, 10)}</Title>
             <Rating movieRating={rating} />
-         </SingleMovieCard>
-      </Container>
+         </SingleTvCard>
+      </TouchableOpacity>
    );
 };
 
-export default SearchCard;
+export default TvCard;
 
-const Container = styled.TouchableOpacity`
-   width: 33.33%;
-   padding: 5px;
-`;
-
-const SingleMovieCard = styled.View`
-   width: 100%;
+const SingleTvCard = styled.View`
+   width: 110px;
    align-items: center;
 `;
 

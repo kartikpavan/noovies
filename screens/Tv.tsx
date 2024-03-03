@@ -4,8 +4,8 @@ import styled from "styled-components/native";
 import { ActivityIndicator, FlatList, RefreshControl, ScrollView } from "react-native";
 import { YELLOW_COLOR } from "../utils/colors";
 import { useQueryClient } from "react-query";
-import Card from "../components/Card";
 import { airingNowSeriesUrl, topRatedSeriesUrl, trendingSeriesUrl } from "../utils/constants";
+import TvCard from "../components/TvCard";
 
 const Tv = () => {
    const queryClient = useQueryClient();
@@ -51,7 +51,7 @@ const Tv = () => {
             <FlatList
                data={trendingSeries}
                renderItem={({ item }) => (
-                  <Card
+                  <TvCard
                      id={item.id}
                      poster={item.poster_path}
                      title={item.original_name}
@@ -70,7 +70,7 @@ const Tv = () => {
             <FlatList
                data={airingNowSeries}
                renderItem={({ item }) => (
-                  <Card
+                  <TvCard
                      id={item.id}
                      poster={item.poster_path}
                      title={item.original_name}
@@ -90,7 +90,7 @@ const Tv = () => {
             <FlatList
                data={topRatedSeries}
                renderItem={({ item }) => (
-                  <Card
+                  <TvCard
                      id={item.id}
                      poster={item.poster_path}
                      title={item.original_name}

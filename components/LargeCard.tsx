@@ -16,10 +16,7 @@ const LargeCard = ({ movie }: Props) => {
       <View
          onPress={() => {
             // @ts-ignore
-            navigation.navigate("Stack", {
-               screen: "Details",
-               params: { id: movie.id, title: movie.title, isTvSeries: false },
-            });
+            navigation.navigate("Stack", { screen: "MovieDetails", params: { id: movie.id } });
          }}>
          <Poster imgUrl={makeImgPath(movie.poster_path)} />
          <Column>
