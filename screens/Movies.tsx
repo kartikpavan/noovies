@@ -6,7 +6,6 @@ import { ActivityIndicator, Dimensions, FlatList, RefreshControl } from "react-n
 import { YELLOW_COLOR } from "../utils/colors";
 import SingleSlide from "../components/SingleSlide";
 import LargeCard from "../components/LargeCard";
-import Card from "../components/TvCard";
 import { useMovies } from "../api/movies";
 import { useQueryClient } from "react-query";
 import { nowPlayingMoviesUrl, popularMoviesUrl, upcomingMoviesUrl } from "../utils/constants";
@@ -66,11 +65,16 @@ const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = () => {
                         prevPos: false,
                         dotsTouchable: true,
                         dotProps: {
-                           badgeStyle: { height: 5, width: 5, backgroundColor: "rgba(255,255,255,0.1)" },
+                           badgeStyle: {
+                              height: 5,
+                              width: 5,
+                              backgroundColor: "rgba(255,255,255,0.1)",
+                           },
                         },
                         dotsWrapperStyle: { paddingTop: 10 },
                         dotActiveStyle: { backgroundColor: YELLOW_COLOR, height: 5, width: 5 },
-                     }}>
+                     }}
+                  >
                      {nowPlayingMovies
                         ?.slice(5, 10)
                         .reverse()

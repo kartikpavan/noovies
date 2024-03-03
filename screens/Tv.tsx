@@ -56,7 +56,6 @@ const Tv = () => {
                      poster={item.poster_path}
                      title={item.original_name}
                      rating={item.vote_average}
-                     isTvSeries={true}
                   />
                )}
                keyExtractor={(item) => item.id.toString()}
@@ -75,7 +74,6 @@ const Tv = () => {
                      poster={item.poster_path}
                      title={item.original_name}
                      rating={item.vote_average}
-                     isTvSeries={true}
                   />
                )}
                keyExtractor={(item) => item.id.toString()}
@@ -95,7 +93,6 @@ const Tv = () => {
                      poster={item.poster_path}
                      title={item.original_name}
                      rating={item.vote_average}
-                     isTvSeries={true}
                   />
                )}
                keyExtractor={(item) => item.id.toString()}

@@ -6,15 +6,15 @@ import Rating from "./Rating";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 
-type Props = { id: number; poster: string; title: string; rating: number; isTvSeries: boolean };
+type Props = { id: number; poster: string; title: string; rating: number };
 
-const TvCard = ({ poster, title, rating, id, isTvSeries = true }: Props) => {
+const TvCard = ({ poster, title, rating, id }: Props) => {
    const navigation = useNavigation();
    return (
       <TouchableOpacity
          onPress={() => {
             // @ts-ignore
-            navigation.navigate("Stack", { screen: "Details", params: { id, title, isTvSeries } });
+            navigation.navigate("Stack", { screen: "Details", params: { id } });
          }}>
          <SingleTvCard>
             <Poster imgUrl={makeImgPath(poster)} />

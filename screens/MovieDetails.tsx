@@ -1,8 +1,16 @@
 import { styled } from "styled-components/native";
-import React from "react";
+import React, { useState } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCredits, useRecommendations } from "../api/details";
-import { ActivityIndicator, Alert, Dimensions, FlatList, Linking, ScrollView, StyleSheet } from "react-native";
+import {
+   ActivityIndicator,
+   Alert,
+   Dimensions,
+   FlatList,
+   Linking,
+   ScrollView,
+   StyleSheet,
+} from "react-native";
 import { BLACK_COLOR, DARK_GREY, WHITE_COLOR, YELLOW_COLOR } from "../utils/colors";
 import Poster from "../components/Poster";
 import { getYear, makeImgPath } from "../utils/helper";
@@ -14,15 +22,24 @@ import CastCard from "../components/CastCard";
 import { moviesURL } from "../utils/constants";
 import MovieCard from "../components/MovieCard";
 import { useMovieDetails } from "../api/movies";
+import MyModal from "../components/MyModal";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({ navigation, route }) => {
+const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({
+   navigation,
+   route,
+}) => {
+   const [modalVisible, setModalVisible] = useState<boolean>(false);
+
    const id = route.params?.id;
    console.log(id);
    const { data, isLoading } = useMovieDetails(moviesURL, id);
-   const { data: movieCredits } = useCredits(moviesURL, id);
-   const { data: recommendations } = useRecommendations(moviesURL, id);
+   const { data: movieCredits, isLoading: isLoadingCredits } = useCredits(moviesURL, id);
+   const { data: recommendations, isLoading: isLoadingRecommendations } = useRecommendations(
+      moviesURL,
+      id
+   );
 
    // Watch Movie / Series
    const OpenURL = async (url: string) => {
@@ -31,13 +48,7 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({ n
       else Alert.alert(`Don't know how to open this URL: ${url}`);
    };
 
-   // useEffect(() => {
-   //    navigation.setOptions({
-   //       title: isTvSeries ? "TV Series" : "Movie",
-   //    });
-   // }, []);
-
-   if (isLoading) {
+   if (isLoading || isLoadingCredits || isLoadingRecommendations) {
       return (
          <LoaderContainer>
             <ActivityIndicator size={"large"} color={YELLOW_COLOR} />
@@ -50,7 +61,10 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({ n
          <Container>
             <Header>
                {data?.backdrop_path && (
-                  <Background style={StyleSheet.absoluteFill} source={{ uri: makeImgPath(data.backdrop_path) }} />
+                  <Background
+                     style={StyleSheet.absoluteFill}
+                     source={{ uri: makeImgPath(data.backdrop_path) }}
+                  />
                )}
                <LinearGradient
                   // Background Linear Gradient
@@ -90,10 +104,10 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({ n
                   <BtnText>Watch Now</BtnText>
                </WatchNowBtn>
             )}
-
-            <WatchTrailerBtn>
+            <WatchTrailerBtn onPress={() => setModalVisible(!modalVisible)}>
                <BtnText style={{ color: YELLOW_COLOR }}>Play Trailer</BtnText>
             </WatchTrailerBtn>
+            <MyModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
             <ListContainer>
                <CastTitle>Cast</CastTitle>
                {movieCredits?.length! > 0 ? (
@@ -113,7 +127,9 @@ const MovieDetails: React.FC<NativeStackScreenProps<any, "MovieDetails">> = ({ n
             <ListContainer style={{ marginBottom: 20, marginTop: 20 }}>
                <ListTitleContainer>
                   <ListTitle>More like this</ListTitle>
-                  <ListTitle2 onPress={() => navigation.navigate("Reviews", { id, isTvSeries: false })}>
+                  <ListTitle2
+                     onPress={() => navigation.navigate("Reviews", { id, isTvSeries: false })}
+                  >
                      Reviews
                   </ListTitle2>
                </ListTitleContainer>

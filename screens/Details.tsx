@@ -20,11 +20,10 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation, route }) => {
    //  ID  and isTvSeries(flag) are being recieved
    const id = route.params?.id;
-   const isTvSeries = route.params?.isTvSeries;
    console.log(id);
-   const { data, isLoading } = useDetails(isTvSeries ? tvSeriesURL : moviesURL, id);
-   const { data: movieCredits } = useCredits(isTvSeries ? tvSeriesURL : moviesURL, id);
-   const { data: recommendations } = useRecommendations(isTvSeries ? tvSeriesURL : moviesURL, id);
+   const { data, isLoading } = useDetails(tvSeriesURL, id);
+   const { data: movieCredits } = useCredits(tvSeriesURL, id);
+   const { data: recommendations } = useRecommendations(tvSeriesURL, id);
 
    // Watch Movie / Series
    const OpenURL = async (url: string) => {
@@ -32,12 +31,6 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
       if (supported) await Linking.openURL(url);
       else Alert.alert(`Don't know how to open this URL: ${url}`);
    };
-
-   // useEffect(() => {
-   //    navigation.setOptions({
-   //       title: isTvSeries ? "TV Series" : "Movie",
-   //    });
-   // }, []);
 
    if (isLoading) {
       return (
@@ -60,9 +53,8 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
                <Column>
                   <Poster imgUrl={makeImgPath(data.poster_path)} />
                   <FlexColumn>
-                     <Title>{data?.name || data?.original_title}</Title>
+                     <Title>{data?.name}</Title>
                      {data?.first_air_date && <Date>{getYear(data?.first_air_date)}</Date>}
-                     {data?.release_date && <Date>{getYear(data?.release_date)}</Date>}
                   </FlexColumn>
                </Column>
             </Header>
@@ -85,11 +77,13 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
                   />
                </IconsContainer>
             </ExtraInfo>
-            <Overview>{data.overview}</Overview>
-            <WatchNowBtn onPress={() => OpenURL(data.homepage)}>
-               <IonIcons name="play" size={20} color={BLACK_COLOR} />
-               <BtnText>Watch Now</BtnText>
-            </WatchNowBtn>
+            {data?.overview && <Overview>{data.overview}</Overview>}
+            {data?.homepage && (
+               <WatchNowBtn onPress={() => OpenURL(data.homepage)}>
+                  <IonIcons name="play" size={20} color={BLACK_COLOR} />
+                  <BtnText>Watch Now</BtnText>
+               </WatchNowBtn>
+            )}
             <WatchTrailerBtn>
                <BtnText style={{ color: YELLOW_COLOR }}>Play Trailer</BtnText>
             </WatchTrailerBtn>
@@ -112,44 +106,26 @@ const Details: React.FC<NativeStackScreenProps<any, "Details">> = ({ navigation,
             <ListContainer style={{ marginBottom: 20, marginTop: 20 }}>
                <ListTitleContainer>
                   <ListTitle>More like this</ListTitle>
-                  <ListTitle2 onPress={() => navigation.navigate("Reviews", { id, isTvSeries })}>Reviews</ListTitle2>
+                  <ListTitle2 onPress={() => navigation.navigate("Reviews", { id, isTvSeries: true })}>
+                     Reviews
+                  </ListTitle2>
                </ListTitleContainer>
-               {isTvSeries ? (
-                  <FlatList
-                     data={recommendations}
-                     renderItem={({ item }) => (
-                        <TvCard
-                           id={item.id}
-                           poster={item.poster_path}
-                           title={item.original_name}
-                           rating={item.vote_average}
-                           isTvSeries
-                        />
-                     )}
-                     style={{ marginHorizontal: 20, marginTop: 10 }}
-                     keyExtractor={(item) => item.id.toString()}
-                     horizontal
-                     showsHorizontalScrollIndicator={false}
-                     contentContainerStyle={{ gap: 20 }}
-                  />
-               ) : (
-                  <FlatList
-                     data={recommendations}
-                     renderItem={({ item }) => (
-                        <MovieCard
-                           id={item.id}
-                           poster={item.poster_path}
-                           title={item.original_title}
-                           rating={item.vote_average}
-                        />
-                     )}
-                     style={{ marginHorizontal: 20, marginTop: 10 }}
-                     keyExtractor={(item) => item.id.toString()}
-                     horizontal
-                     showsHorizontalScrollIndicator={false}
-                     contentContainerStyle={{ gap: 20 }}
-                  />
-               )}
+               <FlatList
+                  data={recommendations}
+                  renderItem={({ item }) => (
+                     <TvCard
+                        id={item.id}
+                        poster={item.poster_path}
+                        title={item.original_name}
+                        rating={item.vote_average}
+                     />
+                  )}
+                  style={{ marginHorizontal: 20, marginTop: 20 }}
+                  keyExtractor={(item) => item.id.toString()}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: 20 }}
+               />
             </ListContainer>
          </Container>
       </ScrollView>
