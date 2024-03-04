@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 const Favorites = () => {
    const navigation = useNavigation();
    const [items, setItems] = useState<FavoriteItem[]>([]);
+
    async function getFavoriteItems() {
       let favoriteItems = await getValueFromStore("favoriteItems"); // Retrieve the stored favorite items
 
@@ -20,9 +21,10 @@ const Favorites = () => {
       }
       setItems(parsedFavoriteItems);
    }
+
    useEffect(() => {
       getFavoriteItems();
-   }, []);
+   }, [items]);
 
    const onRefresh = () => {
       getFavoriteItems();
